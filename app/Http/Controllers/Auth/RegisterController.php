@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
 
 class RegisterController extends Controller
 {
@@ -37,7 +40,6 @@ class RegisterController extends Controller
      */
     
 
-    //เดิม
     
     /* public function __construct()
     {
@@ -48,6 +50,20 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+
+
+        // Redirect if the user's status is not 1   NEW
+        $this->middleware(function ($request, $next) {
+
+        // ต้องเช็ค status เท่ากับ 4 
+        if (Auth::check() && Auth::user()->status != 4) {
+            return redirect('/home');  
+        }
+
+        return $next($request);
+    });
+        
     }
 
     /**
@@ -62,7 +78,9 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+           // 'status' => ['required', 'integer', 'min:1', 'max:4'], // ตรวจสอบฟิลด์ Status เป็นตัวเลข
         ]);
+
     }
 
     /**
@@ -77,6 +95,20 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-        ]);
+            'status' => $data['status'], // เพิ่มการบันทึกฟิลด์ Status
+        ]);   
+    }
+
+    // เพิ่มฟังก์ชันสำหรับการจัดการการลงทะเบียน
+    public function register(Request $request)
+    {
+        // Validate the input
+        $this->validator($request->all())->validate();
+
+        // Create user
+        $this->create($request->all());
+
+        // Redirect back to the add member page with success message
+        return redirect()->route('register')->with('success', 'สมาชิกถูกเพิ่มแล้ว');
     }
 }

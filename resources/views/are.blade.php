@@ -12,71 +12,33 @@
 <body>
 
 
-
-    <!-- @foreach ($data as $item)
-<td>{{ $item->GTNJobNo }}</td> <br>
-    <td>{{ $item->Region_name }}</td> <br>
-@endforeach
-
-    @foreach ($data as $item)
-@endforeach
-
-   -->
-
-    <h2>GTN Job Numbers</h2>
-    <p>Total GTN Job No Count_total: {{ $gtnCount_total }}</p> <!-- แสดงจำนวนของ GTN Count_total -->
-
-    <tr>
-        @foreach ($gtn as $item)
-            <li>{{ $item }}</li> <!-- แสดงค่าของแต่ละรายการในเซลล์ของตาราง -->
-        @endforeach
-    </tr>
-
-    <h2>GTN Job Numbers</h2>
-    <p>Total GTN Job No Count_null: {{ $gtnCount_null }}</p> <!-- แสดงจำนวนของ GTN Count_null -->
-
-    @if ($rowsWithoutData->isEmpty())
-        <p>ไม่มีแถวที่ไม่มีข้อมูลใน GTN Job No</p>
-    @else
-        <p>แถวที่ไม่มีข้อมูลใน GTN Job No:</p>
-        <ul>
-            @foreach ($rowsWithoutData as $row)
-                <li>Row ID: {{ $row->id }} <!-- แสดง ID หรือข้อมูลอื่นๆ ที่เป็นลักษณะเฉพาะของแถว -->
-                    @if (is_null($row->GTNJobNo))
-                        (ค่าเป็น null)
-                    @elseif ($row->GTNJobNo === '')
-                        (ค่าที่เป็นค่าว่าง)
-                    @endif
-                </li>
-            @endforeach
-        </ul>
-    @endif
-
-   <p> Total GTN Job No ทั้งหมด จำนวน = {{ $sum }} </p>
-
-    <br>
-    <br>
-    <br>
-
-
-
-
-    <div class="container text-center mb-3">
-        <input type="submit" value="เพิ่ม" class="btn btn-primary my-3" onclick="showAlert()">
-        <a href="/blog" class="btn btn-success">หน้าแรก</a>
-    </div> <br>
-
-    <!-- Import SweetAlert2 Library -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-    <input type="file">
-
-
-
-
-
-</body>
-
-</html>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Accordion Item #1
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <strong>This is the first item's accordion body.</strong> It is hidden by default until you click to open it. You can add any HTML inside the <code>.accordion-body</code>, and it will be shown when the accordion is expanded.
+            </div>
+          </div>
+        </div>
+      
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Accordion Item #2
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <strong>This is the second item's accordion body.</strong> It is hidden by default until you click to open it.
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add more accordion items as needed -->
+      </div>
+      
