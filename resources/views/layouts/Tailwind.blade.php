@@ -4,8 +4,8 @@
 <head>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-<link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-<script src="{{ asset('js/sidebar.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <script src="{{ asset('js/sidebar.js') }}"></script>
 
 
     @include('sweetalert::alert')
@@ -65,12 +65,19 @@
     @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
+
     <!-- thai sarabun -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 
 
 </head>
+
+<style>
+    .swal-title,
+    .swal-text {
+        font-family: 'Sarabun', sans-serif;
+    }
+</style>
 
 
 <body>
@@ -82,7 +89,7 @@
             <div class="flex justify-between h-16">
                 <!-- โลโก้ -->
                 <div class="flex items-center">
-                    <a href="{{ url('/home') }}">
+                    <a href="{{ url('user/home') }}">
                         <img src="{{ asset('/GTN.jpg') }}" alt="GTN Logo" class="h-10">
                     </a>
                 </div>
@@ -96,23 +103,25 @@
                             </a>
                         @endif
                     @else
-                        <div class="flex items-center space-x-4 relative">
+                        <div class="flex items-center relative">
 
                             <!-- ชื่อผู้ใช้ -->
-                            <button id="user-menu-button" class="text-gray-700 hover:text-green-600 px-4 py-2 transition">
+                            <button id="user-menu-button"
+                                class="text-gray-700 hover:text-green-600 px-2 py-2 transition ml-auto">
                                 {{ Auth::user()->name }}
                             </button>
 
-                            <!-- ไอคอนแจ้งเตือน -->
                             @php
                                 $user = Auth::user();
                             @endphp
 
+                            <!-- 🔔 Admin Notification (Pending Jobs) -->
                             @if ($user && $user->status == 4)
                                 <div class="relative">
                                     <button id="notification-button"
                                         class="text-gray-700 hover:text-green-600 px-4 py-2 transition">
                                         <i class="fas fa-bell"></i>
+
                                         @if ($countPending > 0)
                                             <span
                                                 class="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 rounded-full">
@@ -121,24 +130,17 @@
                                         @endif
                                     </button>
 
-                                    <style>
-                                        .swal-title,
-                                        .swal-text {
-                                            font-family: 'Sarabun', sans-serif;
-                                        }
-                                    </style>
-
-                                    <!-- Dropdown แจ้งเตือน -->
+                                    <!-- Dropdown -->
                                     <div id="notification-dropdown"
                                         class="hidden absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg z-50">
                                         <div class="p-2 font-semibold border-b" style="font-family: 'Sarabun', sans-serif;">
-                                            การแจ้งเตือน
+                                            การแจ้งเตือนจากผู้ขอเพิ่มงาน
                                         </div>
 
                                         @forelse($pendingJobs as $job)
-                                            <a href="{{ route('sda.home') }}" class="block p-2 hover:bg-gray-100 border-b">
-                                                <span class="font-medium">{{ $job->Requester }}</span> Request Added Job :
-                                                {{ $job->Site_Code ?? 'ไม่มีหัวข้อ' }}
+                                            <a href="{{ route('user.sda.home') }}" class="block p-2 hover:bg-gray-100 border-b">
+                                                <span class="font-medium">{{ $job->Requester }}</span>
+                                                ขอเพิ่มงาน: {{ $job->Site_Code ?? 'ไม่มีหัวข้อ' }}
                                             </a>
                                         @empty
                                             <div class="p-2 text-gray-500">ไม่มีแจ้งเตือน</div>
@@ -147,38 +149,107 @@
                                 </div>
                             @endif
 
+                            <!-- 🟢 User Notification (Status Changed) -->
+                            @if ($user && $user->status != 4)
+                                <div class="relative">
+                                    <button id="notification-button-user"
+                                        class="text-gray-700 hover:text-green-600 px-4 py-2 transition">
+                                        <i class="fas fa-bell"></i>
 
-                            <div id="dropdown-menu"
-                                class="hidden absolute mt-10 w-48 bg-white border rounded-lg shadow-lg right-0">
-                                <a href="/home"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-emerald-200">ดูข้อมูลทั้งหมด</a>
-                                <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-emerald-200"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    ออกจากระบบ
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                                    @csrf
-                                </form>
-                            </div>
+                                        @if ($countNotifications > 0)
+                                            <span
+                                                class="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 rounded-full"
+                                                id="user-noti-badge">
+                                                {{ $countNotifications }}
+                                            </span>
+                                        @endif
+
+                                    </button>
+
+                                    <!-- Dropdown -->
+                                    <div id="notification-dropdown-user"
+                                        class="hidden absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg z-50">
+                                        <div class="p-2 font-semibold border-b" style="font-family: 'Sarabun', sans-serif;">
+                                            การแจ้งเตือน
+                                        </div>
+
+                                        @foreach ($notifications as $item)
+                                            @php
+                                                $color =
+                                                    $item->Job_Adding_Status == 'Approved'
+                                                        ? 'text-green-600'
+                                                        : 'text-red-600';
+                                            @endphp
+
+                                            <a href="{{ route('notification.read', $item->id) }}"
+                                                class="block p-2 hover:bg-gray-100 border-b transition">
+
+                                                <div style="font-family: 'Sarabun', sans-serif;"
+                                                    class="{{ $item->is_read ? 'opacity-50 text-gray-500' : '' }}">
+
+                                                    {{ $item->Site_Code }} ถูกเปลี่ยนสถานะเป็น:
+                                                    <span class="font-bold {{ $color }}">
+                                                        {{ $item->Job_Adding_Status }}
+                                                    </span>
+                                                </div>
+
+                                            </a>
+                                        @endforeach
+
+
+
+
+                                    </div>
+                                </div>
+                            @endif
+
 
                         </div>
 
+
                         <!-- JS Dropdown -->
                         <script>
-                            const notificationButton = document.getElementById('notification-button');
-                            const notificationDropdown = document.getElementById('notification-dropdown');
+                            document.addEventListener('DOMContentLoaded', function() {
 
-                            notificationButton.addEventListener('click', () => {
-                                notificationDropdown.classList.toggle('hidden');
-                            });
+                                const adminBtn = document.getElementById('notification-button');
+                                const adminDropdown = document.getElementById('notification-dropdown');
 
-                            // ปิด dropdown ถ้าคลิกข้างนอก
-                            document.addEventListener('click', (e) => {
-                                if (!notificationButton.contains(e.target) && !notificationDropdown.contains(e.target)) {
-                                    notificationDropdown.classList.add('hidden');
+                                const userBtn = document.getElementById('notification-button-user');
+                                const userDropdown = document.getElementById('notification-dropdown-user');
+
+                                // Toggle Admin
+                                if (adminBtn) {
+                                    adminBtn.addEventListener('click', (e) => {
+                                        e.stopPropagation(); // กัน event ไหลไป document
+                                        adminDropdown.classList.toggle('hidden');
+                                    });
                                 }
+
+                                // Toggle User
+                                if (userBtn) {
+                                    userBtn.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        userDropdown.classList.toggle('hidden');
+                                    });
+                                }
+
+                                // ปิด dropdown เมื่อคลิกบริเวณอื่นบนหน้า
+                                document.addEventListener('click', function(e) {
+
+                                    // ปิดของ Admin ถ้าคลิกนอก dropdown และนอกปุ่ม
+                                    if (adminDropdown && !adminDropdown.contains(e.target) && !adminBtn.contains(e.target)) {
+                                        adminDropdown.classList.add('hidden');
+                                    }
+
+                                    // ปิดของ User ถ้าคลิกนอก dropdown และนอกปุ่ม
+                                    if (userDropdown && !userDropdown.contains(e.target) && !userBtn.contains(e.target)) {
+                                        userDropdown.classList.add('hidden');
+                                    }
+                                });
                             });
                         </script>
+
+
                     @endguest
                 </div>
 

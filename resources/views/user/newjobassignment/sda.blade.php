@@ -42,9 +42,14 @@
             }
         </style>
     @endif
+    
+     
 
     <div class="flex h-[calc(100vh-64px)] overflow-hidden">
-        <!-- Aside Sidebar -->
+
+           <!-- Sidebar -->
+        @include('layouts.user')
+     
         <!-- Main Content -->
         <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
 

@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\AddJobcontroller;
 use App\Http\Controllers\Admincontroller;
 use App\Http\Controllers\Auth\RegisterController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Refcodecontroller;
 use App\Http\Controllers\SubcInvoicecontroller;
 use App\Http\Controllers\TowerDismantleController;
 use App\Http\Controllers\Truecontroller;
+use App\Http\Controllers\UserAddJobcontroller;
 use App\Http\Controllers\Wocontroller;
 use App\Http\Middleware\CheckInventory;
 use App\Http\Middleware\CheckStatus;
@@ -20,9 +22,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('user/home', function () {
-    return view('user.home.about');
-});
+
+
+//Collab HUB
+
+// Home
+Route::get('user/home', [UserAddJobcontroller::class, 'home'])->name('user.home');
+
+// Add job User
+Route::get('user/addjob/home', [UserAddJobcontroller::class, 'index'])->name('addjob.user');
+// Add job SDA
+Route::get('user/sda/home', [UserAddJobcontroller::class, 'sda'])->name('user.sda.home');
+
+Route::get('/notification/read/{id}', [UserAddJobController::class, 'markAsRead'])->name('notification.read');
+
+
+
+
+
+
+
 
 // ProjectDatabases
 // 98_TRUE
@@ -34,21 +53,20 @@ Route::post('newjobassignment/savenewjob', [AddJobcontroller::class, 'savenewjob
 Route::post('newjobassignment/addjob', [AddJobcontroller::class, 'importnewjob'])->name('addjob.importnewjob');
 Route::post('newjobassignment/saveaddjob', [AddJobcontroller::class, 'saveimportnewjob'])->name('addjob.saveimportnewjob');
 Route::put('/job/status/{id}', [AddJobcontroller::class, 'updateStatus'])->name('update.job.status');
+
 // SDA
 Route::get('newjobassignment/sda/home', [AddJobcontroller::class, 'sda'])->name('sda.home');
 
-//implement
-
+// Implement
 Route::get('/implement/home', [Implementcontroller::class, 'index'])->name('implement.home');
 Route::post('/implement/save', [Implementcontroller::class, 'addrefcode'])->name('implement.save');
 Route::get('/implement/edit/{id}', [ImplementController::class, 'edit'])->name('implement.edit');
 
-// search sitecode
+// Search Sitecode
 Route::get('/search-sitecode', [Implementcontroller::class, 'searchSitecode']);
 Route::get('/search-refcodeimplement', [Implementcontroller::class, 'searchRefcode']);
 
-//TowerDismantle
-
+// TowerDismantle
 Route::get('/towerDismantle/home', [TowerDismantleController::class, 'index']);
 Route::get('/towerDismantle/update/{id}', [TowerDismantleController::class, 'edit'])->name('towerDismantle.update');
 Route::post('/towerDismantle/save', [TowerDismantleController::class, 'addrefcode'])->name('towerDismantle.save');
@@ -58,11 +76,11 @@ Route::post('/towerDismantle/update/{id}', [TowerDismantleController::class, 'up
 // Taking
 Route::get('dashboard', [Admincontroller::class, 'dashboard']);
 
-//import
+// Import
 Route::post('/import', [Admincontroller::class, 'importrefcode']); //import sitecode
 Route::get('/import', [Admincontroller::class, 'importrefcode']);  //import sitecode
 
-// save import
+// Save import
 Route::get('/saveImport', [Admincontroller::class, 'saveAdd']);  //import Save
 Route::post('/saveImport', [Admincontroller::class, 'saveAdd']); //import Save
 
@@ -83,11 +101,23 @@ Route::put('/update-status/{user}', [App\Http\Controllers\HomeController::class,
 Route::post('/register', [RegisterController::class, 'register'])->name('register');            // status = 4
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register'); // status = 4
 
+
 //test
 /*
 Route::get('/test/are', [Dropdowncontroller::class, 'total'])->name('are');
 Route::get('/test/user', [Dropdowncontroller::class, 'user'])->name('user');
 */
+
+
+
+
+
+
+
+
+
+
+
 
 // Module ERP
 
