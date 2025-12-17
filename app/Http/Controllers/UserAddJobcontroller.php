@@ -48,7 +48,6 @@ class UserAddJobcontroller extends Controller
         // 🔵 แต่ถ้าคุณยังอยากโชว์ list ใน dropdown ให้คงไว้
         $notifications = DB::table('collab_newjob')
             ->where('Requester', $requester)
-            
             ->whereIn('Job_Adding_Status', ['Approved', 'Rejected'])
             ->orderBy('is_read', 'asc') // 🔥 is_read = 0 มาก่อน
             ->orderBy('id', 'desc')     // อันใหม่กว่าอยู่บน

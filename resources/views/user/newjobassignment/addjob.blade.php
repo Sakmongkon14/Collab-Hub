@@ -20,6 +20,13 @@
 @section('title', 'NEW JOB ASSIGNMENT')
 
 @section('content')
+    <!-- Export To Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
+    <!-- Load Font Awesome for Icons -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,6 +60,17 @@
             .swal-title,
             .swal-text {
                 font-family: 'Sarabun', sans-serif;
+            }
+        </style>
+
+        <!-- Hover สำหรับ Filter -->
+        <style>
+            thead th:hover .filter-icon i {
+                color: #60a5fa !important;
+                /* ฟ้าอ่อน hover */
+                transform: scale(1.15);
+                /* ขยายเล็กน้อย */
+                transition: 0.15s ease;
             }
         </style>
     @endif
@@ -285,7 +303,6 @@
             @endif
 
 
-
             <!-- Modal Add New Job -->
             <div id="modalLg"
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
@@ -437,7 +454,6 @@
 
 
 
-
             <!-- เปิด modal ถ้ามี error จากการ validate -->
             @if ($errors->any())
                 <script>
@@ -490,6 +506,7 @@
                             Export Visible Data
                         </a>
 
+
                     </div>
 
 
@@ -499,30 +516,45 @@
                     <table class="min-w-full border-collapse table-auto">
                         <thead class="bg-blue-950 text-white sticky top-0 z-10 ">
                             <tr>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Refcode</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Job <br> Adding Status</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Refcode On ERP</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(0)">Refcode</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(1)">Job <br> Adding Status</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(2)">Refcode On ERP</th>
 
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Site Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Site Name</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Job <br> Description</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(3)">Site Code</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(4)">Site Name</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(5)">Job <br> Description</th>
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Project Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Office Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Customer <br> Region</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(6)">Project Code</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(7)">Office Code</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(8)">Customer <br> Region</th>
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Estimated <br> Revenue</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Estimated <br> Service Cost
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(9)">Estimated <br> Revenue</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(10)">Estimated <br> Service Cost
                                 </th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Estimated <br> Material Cost
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(11)">Estimated <br> Material Cost
                                 </th>
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Estimated <br> Gross Profit
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(12)">Estimated <br> Gross Profit
                                 </th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Estimated <br> GrossProfit
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(13)">Estimated <br> GrossProfit
                                     Margin</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center">Requester</th>
+                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
+                                    onclick="openColumnFilter(14)">Requester</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -776,6 +808,95 @@
             });
 
         }); // END DOMContentLoaded
+    </script>
+
+    <script>
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+        }
+
+        function changeRowsPerPage(v) {
+            rowsPerPage = parseInt(v);
+            currentPage = 1;
+            renderPagination();
+        }
+    </script>
+
+    </script>
+
+    <!-- ฟังชั่น Sort A -> Z Sort Z -> A -->
+    <script>
+        function sortTable(colIndex, direction = 'asc') {
+            // copy rows เพื่อจัดเรียง
+            let sorted = [...allRows];
+
+            sorted.sort((a, b) => {
+                const v1 = a.children[colIndex]?.innerText.trim().toLowerCase() ?? "";
+                const v2 = b.children[colIndex]?.innerText.trim().toLowerCase() ?? "";
+
+                return direction === 'asc' ?
+                    v1.localeCompare(v2, undefined, {
+                        numeric: true
+                    }) :
+                    v2.localeCompare(v1, undefined, {
+                        numeric: true
+                    });
+            });
+
+            // update allRows
+            allRows = sorted;
+
+            // เมื่อ sort แล้ว ต้องนำ filter มาคัดอีกครั้ง
+            applyAllFilters();
+        }
+    </script>
+
+    <script>
+        function exportPOToExcel() {
+            const table = document.querySelector("table");
+            const tbody = table.querySelector("tbody");
+            const visibleRows = Array.from(tbody.querySelectorAll("tr"))
+                .filter(row => row.style.display !== "none");
+
+            if (visibleRows.length === 0) {
+                alert("ไม่มีข้อมูลในหน้านี้เพื่อทำการ Export");
+                return;
+            }
+
+            // เตรียม JSON data
+            const exportData = [];
+
+            visibleRows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+
+                exportData.push({
+                    "Refcode": cells[0].innerText.trim(),
+                    "Job Adding Status": cells[1].innerText.trim(),
+                    "Refcode on ERP": cells[2].innerText.trim(),
+                    "Site Code": cells[3].innerText.trim(),
+                    "Site Name": cells[4].innerText.trim(),
+                    "Job Description": cells[5].innerText.trim(),
+                    "Project Code": cells[6].innerText.trim(),
+                    "Office Code": cells[7].innerText.trim(),
+                    "Customer Region": cells[8].innerText.trim(),
+                    "Estimated Revenue": cells[9].innerText.trim(),
+                    "Estimated Service Cost": cells[10].innerText.trim(),
+                    "Estimated Material Cost": cells[11].innerText.trim(),
+                    "Estimated Gross Profit": cells[12].innerText.trim(),
+                    "Gross Profit Margin": cells[13].innerText.trim(),
+                    "Requester": cells[14].innerText.trim(),
+                });
+            });
+
+            // สร้าง Workbook
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Visible Data");
+
+            // ดาวน์โหลดไฟล์
+            XLSX.writeFile(wb, "Visible_Table_Data.xlsx");
+        }
     </script>
 
 

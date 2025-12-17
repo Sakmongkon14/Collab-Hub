@@ -12,6 +12,7 @@ use App\Http\Controllers\SubcInvoicecontroller;
 use App\Http\Controllers\TowerDismantleController;
 use App\Http\Controllers\Truecontroller;
 use App\Http\Controllers\UserAddJobcontroller;
+use App\Http\Controllers\UserProjectDatabasescontroller;
 use App\Http\Controllers\Wocontroller;
 use App\Http\Middleware\CheckInventory;
 use App\Http\Middleware\CheckStatus;
@@ -22,8 +23,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
 //Collab HUB
 
 // Home
@@ -33,8 +32,32 @@ Route::get('user/home', [UserAddJobcontroller::class, 'home'])->name('user.home'
 Route::get('user/addjob/home', [UserAddJobcontroller::class, 'index'])->name('addjob.user');
 // Add job SDA
 Route::get('user/sda/home', [UserAddJobcontroller::class, 'sda'])->name('user.sda.home');
-
 Route::get('/notification/read/{id}', [UserAddJobController::class, 'markAsRead'])->name('notification.read');
+
+// Admin register
+Route::get('user/sda/register', [RegisterController::class, 'showRegistrationForm'])->name('sda.register');
+Route::post('user/sda/register', [RegisterController::class, 'register'])->name('sda.register');
+
+// Project Databases
+Route::get('user/project/projectview', [UserProjectDatabasescontroller::class, 'project16'])->name('project.projectview');
+
+Route::post('user/permissions/save/{project_code}', [UserProjectDatabasescontroller::class, 'save'])->name('permissions.save');
+
+// Inline update for collab_newjob
+Route::post('user/newjob/inline-update', [UserProjectDatabasescontroller::class, 'inlineUpdate'])->name('newjob.inlineUpdate');
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,23 +124,11 @@ Route::put('/update-status/{user}', [App\Http\Controllers\HomeController::class,
 Route::post('/register', [RegisterController::class, 'register'])->name('register');            // status = 4
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register'); // status = 4
 
-
 //test
 /*
 Route::get('/test/are', [Dropdowncontroller::class, 'total'])->name('are');
 Route::get('/test/user', [Dropdowncontroller::class, 'user'])->name('user');
 */
-
-
-
-
-
-
-
-
-
-
-
 
 // Module ERP
 

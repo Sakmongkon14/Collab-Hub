@@ -1,15 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-
 
 class RegisterController extends Controller
 {
@@ -38,9 +36,7 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    
 
-    
     /* public function __construct()
     {
         $this->middleware('guest');
@@ -51,19 +47,17 @@ class RegisterController extends Controller
     {
         $this->middleware('auth');
 
-
-
         // Redirect if the user's status is not 1   NEW
         $this->middleware(function ($request, $next) {
 
-        // ต้องเช็ค status เท่ากับ 4 
-        if (Auth::check() && Auth::user()->status != 4) {
-            return redirect('/home');  
-        }
+            // ต้องเช็ค status เท่ากับ 4
+            if (Auth::check() && Auth::user()->status != 4) {
+                return redirect('/home');
+            }
 
-        return $next($request);
-    });
-        
+            return $next($request);
+        });
+
     }
 
     /**
@@ -75,10 +69,10 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-           // 'status' => ['required', 'integer', 'min:1', 'max:4'], // ตรวจสอบฟิลด์ Status เป็นตัวเลข
+            // 'status' => ['required', 'integer', 'min:1', 'max:4'], // ตรวจสอบฟิลด์ Status เป็นตัวเลข
         ]);
 
     }
@@ -92,16 +86,18 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'status' => $data['status'], // เพิ่มการบันทึกฟิลด์ Status
-        ]);   
+            'status'   => $data['status'], // เพิ่มการบันทึกฟิลด์ Status
+        ]);
     }
 
     // เพิ่มฟังก์ชันสำหรับการจัดการการลงทะเบียน
     public function register(Request $request)
     {
+        // ดูข้อมูลที่ส่งมาทั้งหมดก่อน (หยุดการทำงานตรงนี้เลย)
+        //dd($request->all());
         // Validate the input
         $this->validator($request->all())->validate();
 
@@ -109,6 +105,6 @@ class RegisterController extends Controller
         $this->create($request->all());
 
         // Redirect back to the add member page with success message
-        return redirect()->route('register')->with('success', 'สมาชิกถูกเพิ่มแล้ว');
+        return redirect()->route('sda.register')->with('success', 'สมาชิกถูกเพิ่มแล้ว');
     }
 }

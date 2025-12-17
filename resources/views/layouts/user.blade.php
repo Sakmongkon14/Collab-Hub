@@ -42,24 +42,13 @@
             <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
                 class="flex flex-col pl-8 mt-2 space-y-1">
 
-                <!-- PR -->
-                <a href="#"
-                    class="px-3 py-1 rounded-md transition font-semibold {{ Route::currentRouteName() === 'pr.home' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                    New Site
-                </a>
-
-                <!-- Purchase -->
-                <a href="#"
-                    class="px-3 py-1 rounded-md transition font-semibold {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                    54_NT_BTO
-                </a>
-
-                <!-- Purchase -->
-                <a href="#"
-                    class="px-3 py-1 rounded-md transition font-semibold {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                    Project View
-                </a>
-
+                @if ($showProjectView16)
+                    <a href="{{ route('project.projectview') }}"
+                        class="px-3 py-1 rounded-md transition font-semibold
+       {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+                        Project View 16
+                    </a>
+                @endif
 
             </div>
         </div>
@@ -158,17 +147,19 @@
             <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
                 class="flex flex-col pl-8 mt-2 space-y-1">
 
-                @php
-                    $isAuthorized = Auth::check() && Auth::user()->status == 4;
-                @endphp
+               
 
-                <!-- Add Member -->
-                <a href="#"
-                    class="px-3 py-1 rounded-md transition font-semibold {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+
+                <a href="{{ route('sda.register') }}"
+                    class="px-3 py-1 rounded-md transition font-semibold 
+    {{ Route::currentRouteName() === 'pr.purchase'
+        ? 'bg-white text-blue-800'
+        : 'text-blue hover:bg-white hover:text-blue-800' }}">
                     Add Member
                 </a>
 
-                <!-- Member Total --> 
+
+                <!-- Member Total -->
                 <a href="#"
                     class="px-3 py-1 rounded-md transition font-semibold {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
                     Member Total

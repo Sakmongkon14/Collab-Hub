@@ -89,7 +89,7 @@
             <div class="flex justify-between h-16">
                 <!-- โลโก้ -->
                 <div class="flex items-center">
-                    <a href="{{ url('user/home') }}">
+                    <a href="{{ url('/home') }}">
                         <img src="{{ asset('/GTN.jpg') }}" alt="GTN Logo" class="h-10">
                     </a>
                 </div>
@@ -138,8 +138,8 @@
                                         </div>
 
                                         @forelse($pendingJobs as $job)
-                                            <a href="{{ route('user.sda.home') }}" class="block p-2 hover:bg-gray-100 border-b">
-                                                <span class="font-medium">{{ $job->Requester }}</span>
+                                            <a href="{{ route('user.sda.home') }}" class="block p-2 hover:bg-gray-100 border-b" style="font-family: 'Sarabun', sans-serif;">
+                                                <span class="font-medium" >{{ $job->Requester }}</span>
                                                 ขอเพิ่มงาน: {{ $job->Site_Code ?? 'ไม่มีหัวข้อ' }}
                                             </a>
                                         @empty
