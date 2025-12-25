@@ -100,31 +100,25 @@
                                                                 <td>{{ $user->email }}</td>
 
                                                                 <td>
-                                                                    
+
                                                                     <select class="status-dropdown"
-                                                                        data-user-id="{{ $user->id }}"
-                                                                        data-status="{{ $user->status }}">
-
-                                                                        {{-- status เดิมของ user --}}
-                                                                        @if ($user->status)
-                                                                            <option value="{{ $user->status }}" selected>
-                                                                                {{ $user->status }} 
-                                                                            </option>
-                                                                        @endif
-
-                                                                        {{-- ตัวเลือกจาก collab_officecode --}}
+                                                                        data-user-id="{{ $user->id }}">
+                                                                        <option value="{{ $user->status }}" selected>
+                                                                            {{ $user->status }}</option>
                                                                         @foreach ($officecodes as $officeCode)
                                                                             @if ($officeCode !== $user->status)
                                                                                 <option value="{{ $officeCode }}">
-                                                                                    {{ $officeCode }}
-                                                                                </option>
+                                                                                    {{ $officeCode }}</option>
                                                                             @endif
                                                                         @endforeach
-
+                                                                        <option value="Admin">Admin</option>
                                                                     </select>
 
 
+
                                                                 </td>
+
+
 
 
                                                                 <td class="text-center">
@@ -215,7 +209,8 @@
 
                                     <div class="row mb-3">
                                         <label for="email"
-                                            class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                                            class="col-md-4 col-form-label text-md-end">{{ __('Email
+                                                                                                                                Address') }}</label>
 
                                         <div class="col-md-6">
                                             <input id="email" type="email"
@@ -277,19 +272,19 @@
 
 
                                     <!--    <div class="row mb-3">
-                                                                    <label for="Option" class="col-md-4 col-form-label text-md-end">Option</label>
-                                                                    
+                                                                            <label for="Option" class="col-md-4 col-form-label text-md-end">Option</label>
+                                                                            
 
-                                                                    <div class="col-md-6">
-                                                                        <input id="Option" type="Option" class="form-control @error('password') is-invalid @enderror" name="Option" required autocomplete="Option">
+                                                                            <div class="col-md-6">
+                                                                                <input id="Option" type="Option" class="form-control @error('password') is-invalid @enderror" name="Option" required autocomplete="Option">
 
-                                                                        @error('password')
+                                                                                @error('password')
         <span class="invalid-feedback" role="alert">
-                                                                                                                        <strong>{{ $message }}</strong>
-                                                                                                                    </span>
+                                                                                                                                        <strong>{{ $message }}</strong>
+                                                                                                                                    </span>
     @enderror
-                                                                    </div>
-                                                                </div> -->
+                                                                            </div>
+                                                                        </div> -->
 
                                     <div class="row mb-0">
                                         <div class="col-md-6 offset-md-4">
@@ -311,6 +306,24 @@
                         document.getElementById('add-member-form').submit();
                     }
                 }
+
+
+                /* เปลี่ยน status */
+                document.querySelectorAll('.status-dropdown').forEach(select => {
+                    const currentValue = select.value;
+
+                    select.addEventListener('mousedown', () => {
+                        // ซ่อนค่าเดิมจาก dropdown list
+                        Array.from(select.options).forEach(option => {
+                            if (option.value === currentValue) option.style.display = 'none';
+                        });
+                    });
+
+                    select.addEventListener('change', () => {
+                        // ถ้าเลือกค่าใหม่ ให้ค่าเดิมกลับมาใน select
+                        Array.from(select.options).forEach(option => option.style.display = 'block');
+                    });
+                });
             </script>
 
 

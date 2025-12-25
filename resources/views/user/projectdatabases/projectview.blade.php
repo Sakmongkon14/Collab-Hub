@@ -1,15 +1,21 @@
-@extends('layouts.Tailwind')
+@extends('layouts.user')
 
 @section('title', 'Project Databases - Project View')
 
 @section('content')
     <!-- Export To Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
     <!-- Load Font Awesome for Icons -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,35 +47,147 @@
         </script>
     @endif
 
+    <!--แปลงเป็น Editable-->
+
+    <style>
+        /* Input field แบบ Excel */
+        .excel-input {
+            width: 100%;
+            min-width: 100px;
+            /* ให้ cell แสดงเต็มความยาวที่ต้องการ */
+
+            background: transparent;
+            /* พื้นหลังใส */
+            font-size: 10px;
+            text-align: center;
+            box-sizing: border-box;
+            /* รวม padding + border ใน width */
+            white-space: nowrap;
+            /* อยู่บรรทัดเดียว */
+
+            text-overflow: ellipsis;
+            /* แสดง ... ถ้ายาวเกิน */
+            transition: all 0.2s;
+            /* effect เวลา focus */
+        }
+
+        /* Focus / editable state */
+        .excel-input:focus,
+        .excel-input.active-hover {
+            outline: 1px solid #3b82f6;
+            /* สีฟ้า */
+            background: #eef6ff;
+            /* ฟีล Excel */
+            border-radius: 10%;
+            /* มุมโค้งเล็กน้อย */
+        }
+
+        /* Readonly cell */
+        .readonly-cell {
+            background-color: #f5f5f5;
+            /* เทาอ่อน */
+            cursor: not-allowed;
+        }
+    </style>
+
     <style>
         .swal-title,
         .swal-text {
             font-family: 'Sarabun', sans-serif;
         }
-    </style>
 
-    <!-- Hover สำหรับ Filter -->
-    <style>
-        thead th:hover .filter-icon i {
-            color: #60a5fa !important;
-            /* ฟ้าอ่อน hover */
-            transform: scale(1.15);
-            /* ขยายเล็กน้อย */
-            transition: 0.15s ease;
+        .readonly-cell {
+            background-color: transparent !important;
+            color: #000;
         }
     </style>
+
+    <style>
+        /* input เงิน */
+        .money-input {
+            text-align: right;
+        }
+
+        /* readonly แต่ไม่เอาพื้นหลังเทา */
+        input[readonly] {
+            background-color: transparent !important;
+            border: none;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* กัน disabled ทำให้สีจาง */
+        input[disabled] {
+            background-color: transparent !important;
+            color: inherit;
+            opacity: 1;
+        }
+    </style>
+
+    <!-- สคริปต์จัดการ input เงิน -->
+    <script>
+        function parseMoney(val) {
+            if (!val) return 0;
+            return parseFloat(val.replace(/,/g, '')) || 0;
+        }
+
+        function formatMoney(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // จำกัดให้กรอกได้เฉพาะตัวเลข
+        $(document).on('input', '.money-input', function() {
+            let val = $(this).val().replace(/[^0-9.]/g, '');
+            let parts = val.split('.');
+            if (parts.length > 2) {
+                val = parts[0] + '.' + parts[1];
+            }
+            $(this).val(val);
+        });
+
+        // ใส่ comma ตอน blur
+        $(document).on('blur', '.money-input', function() {
+            let num = parseMoney($(this).val());
+            if ($(this).val() !== '') {
+                $(this).val(formatMoney(num));
+            }
+        });
+
+        // คำนวณ realtime
+        $(document).on('input', '.money-input', function() {
+            let row = $(this).closest('tr');
+
+            let revenue = parseMoney(row.find('[data-field="Estimated_Revenue_PJ"]').val());
+            let service = parseMoney(row.find('[data-field="Estimated_Service_Cost_PJ"]').val());
+            let material = parseMoney(row.find('[data-field="Estimated_Material_Cost_PJ"]').val());
+
+            let grossProfit = revenue - service - material;
+            let grossMargin = revenue !== 0 ? (grossProfit / revenue) * 100 : 0;
+
+            row.find('.gross-profit').val(formatMoney(grossProfit));
+            row.find('.gross-margin').val(formatMoney(grossMargin) + '%');
+        });
+    </script>
+
+
+
+
+
+
+
+
 
 
 
     <div class="flex h-[calc(100vh-64px)] overflow-hidden">
-        <!-- Aside Sidebar -->
-        <!-- Sidebar -->
-        @include('layouts.user')
+
 
         <!-- Main Content -->
         <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
 
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
             <div>
                 <h2 class="text-center my-3 text-2xl font-bold">
@@ -77,54 +195,44 @@
                 </h2>
             </div>
 
-            @if (session('success'))
-                <!-- Modal Popup -->
-                <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content border-success">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title" id="successModalLabel">สำเร็จ!</h5>
-                                <!--   <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button> -->
-                            </div>
-                            <div class="modal-body text-success">
-                                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            @if (session('error'))
-                <!-- Modal Popup Error -->
-                <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content border-danger">
-                            <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="errorModalLabel">เกิดข้อผิดพลาด!</h5>
-                                <!-- <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button> -->
-                            </div>
-                            <div class="modal-body text-danger">
-                                <i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
             <!-- Container ปุ่ม -->
-            <div class="container mx-auto p-4">
-                <div class="flex justify-end">
-                    <button onclick="document.getElementById('permissionModal').classList.remove('hidden')"
-                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        Permission
-                    </button>
+            <div class="container mx-auto mb-2">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+                    {{-- 1. ปุ่ม Export (อยู่ทางซ้าย) --}}
+                    <div class="order-2 sm:order-1">
+                        <button type="button" id="exportToExcel" onclick="exportToExcel()"
+                            class="flex items-center px-5 py-2.5 rounded-xl font-semibold text-white text-sm
+                       bg-gradient-to-r from-green-600 to-green-500
+                       shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200">
+                            <i class="fas fa-file-excel mr-2 text-lg"></i>
+                            Export Visible Data
+                        </button>
+                    </div>
+
+                    {{-- 2. ปุ่ม Permission (อยู่ทางขวา) --}}
+                    <div class="order-1 sm:order-2 flex items-center gap-3">
+
+                        <button onclick="document.getElementById('permissionModal').classList.remove('hidden')"
+                            class="group flex items-center px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-bold text-sm rounded-xl shadow-[0_2px_10px_-3px_rgba(79,70,229,0.2)]
+           hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0
+           transition-all duration-300 ease-out">
+
+                            {{-- Icon with animation on hover --}}
+                            <i
+                                class="fas fa-user-shield mr-2.5 text-base transition-transform duration-300 group-hover:rotate-12"></i>
+
+                            <span class="tracking-wide">Permission</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
             <!-- Modal -->
             <form action="{{ route('permissions.save', $projectCode) }}" method="POST">
                 @csrf
+
                 <input type="hidden" name="project_code" value="{{ $projectCode }}">
 
 
@@ -150,6 +258,21 @@
                                             <th class="border px-2 w-[140px]">User</th>
                                             <th class="border px-2 w-[100px]">Project Member</th>
                                             <th class="border px-2 w-[140px]">Project Role</th>
+
+                                            <th class="border px-2 w-[140px]" style="background-color: green">Customer
+                                                Region</th>
+                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
+                                                Revenue</th>
+                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
+                                                Service Cost</th>
+                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
+                                                Material Cost</th>
+
+                                            <!-- Read / invisible   -->
+                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated Gross
+                                                Profit</th>
+                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated Gross
+                                                Profit Margin</th>
 
                                             <th class="border px-2 w-[100px] bg-red-400 text-white">Col1</th>
                                             <th class="border px-2 w-[100px] bg-red-400 text-white">Col2</th>
@@ -223,12 +346,18 @@
                                                 <td class="border px-2">
                                                     <select name="member_status[{{ $user->id }}]"
                                                         class="text-xs p-1 border rounded w-full bg-white">
-                                                        <option value="yes"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->member_status === 'yes' ? 'selected' : '' }}>
-                                                            YES</option>
+
+
                                                         <option value="no"
                                                             {{ isset($permissions[$user->id]) && $permissions[$user->id]->member_status === 'no' ? 'selected' : '' }}>
-                                                            NO</option>
+                                                            No
+                                                        </option>
+
+                                                        <option value="yes"
+                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->member_status === 'yes' ? 'selected' : '' }}>
+                                                            Yes
+                                                        </option>
+
                                                     </select>
                                                 </td>
 
@@ -246,26 +375,86 @@
                                                         </option>
 
                                                         <option value="Project Manager"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Manager' ? 'selected' : '' }}>
+                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Manager'
+                                                                ? 'selected'
+                                                                : '' }}>
                                                             Project Manager
                                                         </option>
 
                                                         <option value="Project Admin"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Admin' ? 'selected' : '' }}>
+                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Admin'
+                                                                ? 'selected'
+                                                                : '' }}>
                                                             Project Admin
                                                         </option>
 
                                                         <option value="Site Supervisor"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Site Supervisor' ? 'selected' : '' }}>
+                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Site Supervisor'
+                                                                ? 'selected'
+                                                                : '' }}>
                                                             Site Supervisor
                                                         </option>
 
                                                         <option value="Project Director"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Director' ? 'selected' : '' }}>
+                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Director'
+                                                                ? 'selected'
+                                                                : '' }}>
                                                             Project Director
                                                         </option>
                                                     </select>
                                                 </td>
+
+
+
+                                                {{-- ===== Project-level permissions ===== --}}
+                                                @php
+                                                    $projectFields = [
+                                                        'Customer_Region_PJ',
+                                                        'Estimated_Revenue_PJ',
+                                                        'Estimated_Service_Cost_PJ',
+                                                        'Estimated_Material_Cost_PJ',
+
+                                                        // 🔥 2 อันใหม่ (read / invisible เท่านั้น)
+                                                        'Estimated_Gross_Profit_PJ',
+                                                        'Estimated_Gross_Profit_Margin_PJ',
+                                                    ];
+
+                                                    // field ที่ห้าม write
+                                                    $readOnlyFields = [
+                                                        'Estimated_Gross_Profit_PJ',
+                                                        'Estimated_Gross_Profit_Margin_PJ',
+                                                    ];
+                                                @endphp
+
+                                                @foreach ($projectFields as $field)
+                                                    <td class="border px-2">
+                                                        <select
+                                                            name="{{ $field }}_permission[{{ $user->id }}]"
+                                                            class="text-xs p-1 border rounded w-full bg-white project-permission"
+                                                            data-field="{{ $field }}"
+                                                            data-user-id="{{ $user->id }}">
+
+                                                            <option value="invisible"
+                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? 'invisible') === 'invisible' ? 'selected' : '' }}>
+                                                                Invisible
+                                                            </option>
+
+                                                            <option value="read"
+                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? '') === 'read' ? 'selected' : '' }}>
+                                                                Read
+                                                            </option>
+
+                                                            {{-- ❌ ไม่ให้ Write สำหรับ Gross --}}
+                                                            @if (!in_array($field, $readOnlyFields))
+                                                                <option value="write"
+                                                                    {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? '') === 'write' ? 'selected' : '' }}>
+                                                                    Write
+                                                                </option>
+                                                            @endif
+
+                                                        </select>
+                                                    </td>
+                                                @endforeach
 
 
                                                 <!-- Dynamic Columns -->
@@ -324,7 +513,6 @@
 
                 .btn {
                     height: 40px;
-
                 }
 
                 #exportButton {
@@ -380,80 +568,175 @@
 
             <!-- ตารางข้อมูล โปรเจค-->
             <div>
+
+                @php
+                    $projectCols = [
+                        'Customer_Region_PJ' => 'Customer Region',
+                        'Estimated_Revenue_PJ' => 'Estimated Revenue',
+                        'Estimated_Service_Cost_PJ' => 'Estimated Service Cost',
+                        'Estimated_Material_Cost_PJ' => 'Estimated Material Cost',
+                    ];
+
+                    $moneyFields = ['Estimated_Revenue_PJ', 'Estimated_Service_Cost_PJ', 'Estimated_Material_Cost_PJ'];
+                @endphp
+
+
                 <div class="table-container">
                     <table class="table" id="table">
                         <thead>
                             <tr style="font-size:12px; text-align:center;">
-                                <!-- New Add Job -->
-                                <th scope="col">Refcode</th>
-                                <th scope="col">Site Code</th>
-                                <th scope="col">Job Description</th>
-                                <th scope="col">Office Code</th>
-                                <th scope="col">Customer Region</th>
-                                <th scope="col">Estimated Revenue</th>
-                                <th scope="col">Estimated Service Cost</th>
-                                <th scope="col">Estimated Material Cost</th>
-                                <th scope="col">Estimated Gross Profit</th>
-                                <th scope="col">Estimated Gross Profit Margin</th>
+                                <th>Refcode</th>
+                                <th>Site Code</th>
+                                <th>Job Description</th>
+                                <th>Office Code</th>
 
+                                {{-- ===== Project Columns (thead) ===== --}}
+                                @foreach ($projectCols as $field => $label)
+                                    @php
+                                        $visibility = $permissions[Auth::id()]->$field ?? 'invisible';
+                                    @endphp
+
+                                    <th
+                                        style="
+                            background:green;
+                            color:white;
+                            {{ $visibility === 'invisible' ? 'display:none;' : '' }}
+                        ">
+                                        {{ $label }}
+                                    </th>
+                                @endforeach
+
+
+                                @php
+                                    $gpVisibility = $permissions[Auth::id()]->Estimated_Gross_Profit_PJ ?? 'invisible';
+                                    $gmVisibility =
+                                        $permissions[Auth::id()]->Estimated_Gross_Profit_Margin_PJ ?? 'invisible';
+                                @endphp
+
+                                <th class="border px-2 w-[140px]"
+                                    style="background-color: blue; color:white;
+           {{ $gpVisibility === 'invisible' ? 'display:none;' : '' }}">
+                                    Estimated Gross Profit
+                                </th>
+
+                                <th class="border px-2 w-[140px]"
+                                    style="background-color: blue; color:white;
+           {{ $gmVisibility === 'invisible' ? 'display:none;' : '' }}">
+                                    Estimated Gross Profit Margin
+                                </th>
+
+
+                                {{-- ===== col 1–50 (thead) ===== --}}
                                 @for ($i = 1; $i <= 50; $i++)
                                     @php
                                         $col = "col$i";
-                                        $visibility = $permissions[Auth::id()]->$col ?? 'write'; // ค่า default ให้เห็น
+                                        $visibility = $permissions[Auth::id()]->$col ?? 'invisible';
                                     @endphp
-                                    <th scope="col"
-                                        style="background-color: red; color: white; {{ $visibility === 'invisible' ? 'display:none;' : '' }}">
-                                        {{ 'Col' . $i }}
+                                    <th
+                                        style="
+                            background:red;
+                            color:white;
+                            {{ $visibility === 'invisible' ? 'display:none;' : '' }}
+                        ">
+                                        Col {{ $i }}
                                     </th>
                                 @endfor
                             </tr>
-
-
                         </thead>
+
                         <tbody>
                             @foreach ($projectData as $item)
-                                <tr style="font-size: 10px; text-align:center ">
+                                <tr style="font-size:10px; text-align:center;">
 
-                                    <!-- New Add Job -->
                                     <td>{{ $item->Refcode_PJ }}</td>
                                     <td>{{ $item->Site_Code_PJ }}</td>
                                     <td>{{ $item->Job_Description_PJ }}</td>
                                     <td>{{ $item->Office_Code_PJ }}</td>
-                                    <td>{{ $item->Customer_Region_PJ }}</td>
-                                    <td>{{ $item->Estimated_Revenue_PJ }}</td>
-                                    <td>{{ $item->Estimated_Service_Cost_PJ }}</td>
-                                    <td>{{ $item->Estimated_Material_Cost_PJ }}</td>
-                                    <td>{{ $item->Estimated_Gross_Profit_PJ }}</td>
-                                    <td>{{ $item->Estimated_Gross_ProfitMargin_PJ }}</td>
 
+                                    {{-- ===== Project Columns (tbody) ===== --}}
+                                    @foreach ($projectCols as $field => $label)
+                                        @php
+                                            $visibility = $permissions[Auth::id()]->$field ?? 'invisible';
+                                            $isRead = $visibility === 'read';
+                                            $isInvisible = $visibility === 'invisible';
+                                            $isMoney = in_array($field, $moneyFields);
+                                            $originalValue = $item->$field ?? '';
+                                        @endphp
+                                        <td class="project-col {{ $field }}"
+                                            style="{{ $isInvisible ? 'display:none;' : '' }}">
+                                            <input type="text"
+                                                class="excel-input {{ $isMoney ? 'money-input text-end' : '' }} {{ $isRead ? 'readonly-cell' : '' }}"
+                                                value="{{ $isMoney
+                                                    ? ($originalValue !== null && $originalValue !== ''
+                                                        ? number_format((float) str_replace(',', '', $originalValue), 2)
+                                                        : '')
+                                                    : $originalValue }}"
+                                                data-id="{{ $item->Refcode_PJ }}" data-field="{{ $field }}"
+                                                data-original="{{ $originalValue }}"
+                                                {{ $isRead ? 'readonly disabled tabindex=-1' : '' }}
+                                                @if ($field === 'Estimated_Revenue_PJ') oninput="validateRevenue(this)" @endif>
+                                        </td>
+                                    @endforeach
+
+
+                                    <!-- Gross Profit and Margin -->
+                                    @php
+                                        $revenue = (float) str_replace(',', '', $item->Estimated_Revenue_PJ ?? 0);
+                                        $service = (float) str_replace(',', '', $item->Estimated_Service_Cost_PJ ?? 0);
+                                        $material = (float) str_replace(
+                                            ',',
+                                            '',
+                                            $item->Estimated_Material_Cost_PJ ?? 0,
+                                        );
+
+                                        $grossProfit = $revenue - $service - $material;
+                                        $grossMargin = $revenue != 0 ? ($grossProfit / $revenue) * 100 : 0;
+                                    @endphp
+
+                                    <td style="{{ $gpVisibility === 'invisible' ? 'display:none;' : '' }}">
+                                        <input type="text" class="excel-input gross-profit text-end readonly-cell"
+                                            value="{{ number_format($grossProfit, 2) }}" readonly disabled
+                                            tabindex="-1">
+                                    </td>
+
+
+
+                                    <td style="{{ $gmVisibility === 'invisible' ? 'display:none;' : '' }}">
+                                        <input type="text" class="excel-input gross-margin text-end readonly-cell"
+                                            value="{{ number_format($grossMargin, 2) }}%" readonly disabled
+                                            tabindex="-1">
+                                    </td>
+
+
+
+
+
+                                    {{-- ===== col 1–50 (tbody) ===== --}}
                                     @for ($i = 1; $i <= 50; $i++)
                                         @php
                                             $col = "col$i";
-                                            $visibility = $permissions[Auth::id()]->$col ?? 'write'; // default ให้เห็น
+                                            $visibility = $permissions[Auth::id()]->$col ?? 'invisible';
                                             $isRead = $visibility === 'read';
                                             $isInvisible = $visibility === 'invisible';
                                         @endphp
+
                                         <td class="col-{{ $i }}"
                                             style="{{ $isInvisible ? 'display:none;' : '' }}">
                                             <input type="text"
                                                 class="excel-input {{ $isRead ? 'readonly-cell' : '' }}"
                                                 value="{{ $item->$col }}" data-id="{{ $item->Refcode_PJ }}"
                                                 data-field="{{ $col }}"
-                                                {{ $isRead ? 'readonly tabindex=-1' : '' }}
-                                                {{ $isRead ? 'disabled' : '' }}>
+                                                {{ $isRead ? 'readonly disabled tabindex=-1' : '' }}>
                                         </td>
                                     @endfor
-
-
-
-
 
                                 </tr>
                             @endforeach
                         </tbody>
-
                     </table>
                 </div>
+
+
             </div>
 
 
@@ -461,39 +744,137 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
+        function storeOriginal(input) {
+            input.dataset.original = input.value;
+        }
 
-    const rolePermissions = {
-        "Project Manager": { write: Array.from({ length: 50 }, (_, i) => i + 1), read: [] },
-        "Project Admin": { write: [1, 2, 3], read: [] },
-        "Site Supervisor": { write: [1], read: [] },
-        "Project Director": { write: [], read: [1, 2, 3, 4, 5 ,6 ,7] },
-        // "Region": { write: [], read: [6, 7, 8, 9, 10] } // เพิ่ม role ใหม่
-    };
+        function validateRevenue(input) {
+            let raw = input.value.replace(/,/g, '').trim();
 
-    document.querySelectorAll('.project-role').forEach(roleSelect => {
-        const userId = roleSelect.dataset.userId;
-
-        roleSelect.addEventListener('change', function() {
-            const role = this.value;
-            const row = this.closest('tr');
-            const perms = rolePermissions[role] || { write: [], read: [] };
-
-            for (let i = 1; i <= 50; i++) {
-                const colSelect = row.querySelector(`select[name="col${i}_permission[${userId}]"]`);
-                if (!colSelect) continue;
-
-                if (perms.write.includes(i)) colSelect.value = 'write';
-                else if (perms.read.includes(i)) colSelect.value = 'read';
-                else colSelect.value = 'invisible';
+            // ❌ ว่าง
+            if (raw === '') {
+                input.value = input.dataset.original ?? '';
+                return;
             }
-        });
-    });
-});
-</script>
 
+            // ❌ ไม่ใช่ตัวเลข
+            if (isNaN(raw)) {
+                input.value = input.dataset.original ?? '';
+                return;
+            }
+
+            let num = parseFloat(raw);
+
+            // ❌ ห้ามเป็น 0
+            if (num === 0) {
+                input.value = input.dataset.original ?? '';
+                return;
+            }
+
+            // ✔ ถูกต้อง → อัปเดต original
+            input.dataset.original = input.value;
+        }
+    </script>
+
+
+
+
+    <!-- Auto Set Permission ตาม Role -->
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const readOnlyProjectFields = [
+                'Estimated_Gross_Profit_PJ',
+                'Estimated_Gross_Profit_Margin_PJ'
+            ];
+
+            const rolePermissions = {
+                "": { // No
+                    cols: {
+                        invisible: "all"
+                    },
+                    project: {
+                        normal: "invisible",
+                        readonly: "invisible"
+                    }
+                },
+
+                "Project Manager": {
+                    cols: {
+                        write: "all"
+                    },
+                    project: {
+                        normal: "write",
+                        readonly: "read" // 🔥 2 ช่อง Gross = read
+                    }
+                },
+
+                "Project Admin": {
+                    cols: {
+                        write: [1, 2]
+                    },
+                    project: {
+                        normal: "write",
+                        readonly: "read"
+                    }
+                },
+
+                "Site Supervisor": {
+                    cols: {
+                        read: "all"
+                    },
+                    project: {
+                        normal: "read",
+                        readonly: "read"
+                    }
+                },
+
+                "Project Director": {
+                    cols: {
+                        read: "all"
+                    },
+                    project: {
+                        normal: "read",
+                        readonly: "read"
+                    }
+                }
+            };
+
+            document.querySelectorAll('.project-role').forEach(roleSelect => {
+
+                roleSelect.addEventListener('change', function() {
+
+                    const role = this.value;
+                    const row = this.closest('tr');
+                    const config = rolePermissions[role] || rolePermissions[""];
+
+                    /* ===== col 1–50 ===== */
+                    row.querySelectorAll('.dynamic-col').forEach(select => {
+                        const col = parseInt(select.dataset.col);
+
+                        select.value = 'invisible'; // reset
+
+                        if (config.cols.write === "all") select.value = 'write';
+                        else if (config.cols.read === "all") select.value = 'read';
+                        else if (config.cols.write?.includes(col)) select.value = 'write';
+                        else if (config.cols.read?.includes(col)) select.value = 'read';
+                    });
+
+                    /* ===== 4 Project Columns ===== */
+                    row.querySelectorAll('.project-permission').forEach(select => {
+                        const field = select.dataset.field;
+
+                        if (readOnlyProjectFields.includes(field)) {
+                            select.value = config.project.readonly;
+                        } else {
+                            select.value = config.project.normal;
+                        }
+                    });
+                });
+            });
+        });
+
         document.querySelectorAll("select").forEach(select => {
             select.addEventListener("change", function() {
 
@@ -524,7 +905,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     </script>
-
 
 
     <!--แปลงเป็น Editable-->
@@ -613,6 +993,54 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     </script>
+
+
+    <!-- Export -->
+    <script>
+        function exportToExcel() {
+            const table = document.getElementById("table");
+            const rows = table.querySelectorAll("tr");
+
+            let data = [];
+
+            rows.forEach(row => {
+                let rowData = [];
+
+                const cells = row.querySelectorAll("th, td");
+
+                cells.forEach(cell => {
+                    // ข้าม cell ที่ถูกซ่อน
+                    if (cell.offsetParent === null) return;
+
+                    let value = "";
+
+                    // ถ้ามี input ให้ดึง value
+                    const input = cell.querySelector("input");
+                    if (input) {
+                        value = input.value;
+                    } else {
+                        value = cell.innerText.trim();
+                    }
+
+                    rowData.push(value);
+                });
+
+                if (rowData.length > 0) {
+                    data.push(rowData);
+                }
+            });
+
+            // สร้าง workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            XLSX.utils.book_append_sheet(wb, ws, "Visible Data");
+
+            // export
+            XLSX.writeFile(wb, "project_visible_data.xlsx");
+        }
+    </script>
+
 
 
 

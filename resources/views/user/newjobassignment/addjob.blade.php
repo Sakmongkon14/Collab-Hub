@@ -1,36 +1,34 @@
-@extends('layouts.Tailwind')
-
-<script>
-    const notifBtn = document.getElementById('notification-button');
-    const notifDropdown = document.getElementById('notification-dropdown');
-
-    notifBtn.addEventListener('click', () => {
-        notifDropdown.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', function(event) {
-        if (!notifBtn.contains(event.target) && !notifDropdown.contains(event.target)) {
-            notifDropdown.classList.add('hidden');
-        }
-    });
-</script>
-
-
+@extends('layouts.user')
 
 @section('title', 'NEW JOB ASSIGNMENT')
 
 @section('content')
+
     <!-- Export To Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
+
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
     <!-- Load Font Awesome for Icons -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        .font-sarabun {
+            font-family: 'Sarabun', sans-serif !important;
+        }
+    </style>
+
+
     <!-- แสดงข้อความ error -->
     @if (session('error'))
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
@@ -55,33 +53,30 @@
                 });
             });
         </script>
-
-        <style>
-            .swal-title,
-            .swal-text {
-                font-family: 'Sarabun', sans-serif;
-            }
-        </style>
-
-        <!-- Hover สำหรับ Filter -->
-        <style>
-            thead th:hover .filter-icon i {
-                color: #60a5fa !important;
-                /* ฟ้าอ่อน hover */
-                transform: scale(1.15);
-                /* ขยายเล็กน้อย */
-                transition: 0.15s ease;
-            }
-        </style>
     @endif
 
-    <div class="flex h-[calc(100vh-64px)] overflow-hidden">
-        <!-- Aside Sidebar -->
-        <!-- Sidebar -->
-        @include('layouts.user')
+    <!-- Hover สำหรับ Filter -->
+    <style>
+        .swal-title,
+        .swal-text {
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        .filter-active i {
+            color: #60a5fa !important;
+        }
+
+        thead th:hover .filter-icon:not(.filter-active) i {
+            color: #93c5fd;
+        }
+    </style>
+
+    <div class="flex flex-col lg:flex-row min-h-[calc(100vh-60px)] overflow-hidden">
+
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
+        <main class="flex-1 bg-gray-100 overflow-y-auto">
+
 
             <div class="flex justify-between items-center bg-white p-4 rounded-xl mb-6 shadow-md">
 
@@ -176,7 +171,7 @@
             @if (!empty($dataToSave) && (is_array($dataToSave) || is_object($dataToSave)))
                 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div
-                        class="relative w-full max-w-[70vw] mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[70vh]">
+                        class="relative w-full max-w-[70vw] mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[50vh]">
 
                         <!-- Header -->
                         <div class="flex justify-between items-center px-4 md:px-6 py-3 border-b bg-blue-950">
@@ -193,9 +188,10 @@
 
                             <!-- ตารางแสดงข้อมูล -->
                             <div class="w-full h-full overflow-y-auto">
-                                <table class="w-max md:w-full text-sm border-collapse">
+                                <table class="w-max md:w-full text-xs border-collapse">
                                     <thead class="sticky top-0 bg-blue-50 shadow-sm ">
-                                        <tr class="text-sm text-center text-gray-700">
+                                        <tr class="text-sm text-center text-gray-700"
+                                            style="font-family: 'Sarabun', sans-serif;">
                                             <th class="px-2 py-3 border">Site Code</th>
                                             <th class="px-2 py-3 border">Site Name</th>
                                             <th class="px-2 py-3 border">Job Description</th>
@@ -303,6 +299,7 @@
             @endif
 
 
+
             <!-- Modal Add New Job -->
             <div id="modalLg"
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50">
@@ -322,24 +319,23 @@
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <div>
-                                <label class="block mb-1 font-semibold">Site Code<span class="text-red-500">*</span>
+                                <label class="block mb-1 font-sarabun">Site Code<span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="site_code" class="border rounded-md w-full p-1" required>
                             </div>
                             <div>
-                                <label class="block mb-1 font-semibold">Site Name</label>
+                                <label class="block mb-1 font-sarabun">Site Name</label>
                                 <input type="text" name="site_name" class="border rounded-md w-full p-1">
                             </div>
                             <div>
-                                <label class="block mb-1 font-semibold">Job Description <span
-                                        class="text-red-500">*</span>
+                                <label class="block mb-1 font-sarabun">Job Description <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="job_description" class="border rounded-md w-full p-1"
                                     required>
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold">
+                                <label class="block mb-1 font-sarabun">
                                     Project Code <span class="text-red-500">*</span>
                                 </label>
 
@@ -357,7 +353,7 @@
 
 
                             <div>
-                                <label class="block mb-1 font-semibold">
+                                <label class="block mb-1 font-sarabun">
                                     Office Code<span class="text-red-500">*</span>
                                 </label>
 
@@ -375,43 +371,42 @@
 
 
                             <div>
-                                <label class="block mb-1 font-semibold">Customer Region</label>
+                                <label class="block mb-1 font-sarabun">Customer Region</label>
                                 <input type="text" name="customer_region" class="border rounded-md w-full p-1">
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold">Estimated Revenue <span
+                                <label class="block mb-1 font-sarabun">Estimated Revenue <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" id="estimated_revenue" name="estimated_revenue"
                                     class="border rounded-md w-full p-1" required>
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold">Estimated Service Cost <span
+                                <label class="block mb-1 font-sarabun">Estimated Service Cost <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" id="estimated_service_cost" name="estimated_service_cost"
                                     class="border rounded-md w-full p-1" required>
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold">Estimated Material Cost <span
+                                <label class="block mb-1 font-sarabun">Estimated Material Cost <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" id="estimated_material_cost" name="estimated_material_cost"
                                     class="border rounded-md w-full p-1" required>
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold">Estimated Gross Profit</label>
+                                <label class="block mb-1 font-sarabun">Estimated Gross Profit</label>
                                 <input type="text" id="estimated_gross_profit" name="estimated_gross_profit" readonly
-                                    class="border rounded-md w-full p-1 font-semibold">
+                                    class="border rounded-md w-full p-1 ">
                             </div>
 
                             <div>
-                                <label class="block mb-1 font-semibold  whitespace-nowrap">Estimated Gross Profit
+                                <label class="block mb-1 font-sarabun whitespace-nowrap">Estimated Gross Profit
                                     Margin</label>
                                 <input type="text" id="estimated_gross_profit_margin"
-                                    name="estimated_gross_profit_margin" readonly
-                                    class="border rounded-md w-full p-1 font-semibold">
+                                    name="estimated_gross_profit_margin" readonly class="border rounded-md w-full p-1">
                             </div>
 
                         </div>
@@ -439,11 +434,11 @@
 
 
                             <button type="button" id="cancelBtn"
-                                class="rounded-md border py-2 px-4 font-semibold text-slate-600 hover:bg-slate-100">
+                                class="rounded-md border py-2 px-4 font-sarabun text-slate-600 hover:bg-slate-100">
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="rounded-md bg-green-600 text-white py-2 px-4 font-semibold hover:bg-green-700 shadow-md">
+                                class="rounded-md bg-green-600 text-white py-2 px-4 font-sarabun hover:bg-green-700 shadow-md">
                                 Save
                             </button>
                         </div>
@@ -451,6 +446,7 @@
                     </form>
                 </div>
             </div>
+
 
 
 
@@ -471,11 +467,11 @@
             @endif
 
 
-            <div class="bg-white p-4 rounded-xl shadow-md h-[430px]">
+            <div class="bg-white p-4 shadow-md h-[565px]">
                 <div class="flex items-center justify-between w-full">
 
                     <!-- H2 อยู่ซ้ายสุด -->
-                    <h2 class="text-2xl font-bold text-blue-900">
+                    <h2 class="text-2xl font-sarabun text-blue-900">
                         Added Job Records
                     </h2>
 
@@ -484,7 +480,7 @@
 
                         <!-- Add New Job -->
                         <button id="openModalBtn"
-                            class="px-4 py-2 rounded-lg font-semibold text-white 
+                            class="px-4 py-2 rounded-lg font-sarabun text-white 
                bg-gradient-to-r from-blue-700 to-blue-500 
                shadow-md hover:shadow-lg hover:scale-105 transition-all">
                             Add New Job
@@ -492,69 +488,238 @@
 
                         <!-- Import New Job -->
                         <button id="openModalBtn2"
-                            class="px-4 py-2 rounded-lg font-semibold text-white 
+                            class="px-4 py-2 rounded-lg font-sarabun text-white 
                bg-gradient-to-r from-indigo-600 to-purple-500
                shadow-md hover:shadow-lg hover:scale-105 transition-all">
                             Import New Job
                         </button>
 
                         <!-- Export Visible Data -->
-                        <a href="/export-wo"
-                            class="px-4 py-2 rounded-lg font-semibold text-white
+                        <button type="button" id="exportPOToExcel" onclick="exportPOToExcel()"
+                            class="px-4 py-2 rounded-lg font-sarabun text-white
               bg-gradient-to-r from-green-600 to-green-500
               shadow-md hover:shadow-lg hover:scale-105 transition-all">
-                            Export Visible Data
-                        </a>
-
+                            <i class="fas fa-file-excel mr-2"></i> Export visible Data
+                        </button>
 
                     </div>
 
 
                 </div>
 
-                <div class="overflow-y-auto h-[350px] mt-2">
+                <div class="overflow-y-auto h-[350px] mt-2 font-sarabun">
                     <table class="min-w-full border-collapse table-auto">
-                        <thead class="bg-blue-950 text-white sticky top-0 z-10 ">
+                        <thead class="bg-blue-950 text-white text-base sticky top-0 z-10">
                             <tr>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(0)">Refcode</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(1)">Job <br> Adding Status</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(2)">Refcode On ERP</th>
 
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Refcode</span>
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(3)">Site Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(4)">Site Name</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(5)">Job <br> Description</th>
-
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(6)">Project Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(7)">Office Code</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(8)">Customer <br> Region</th>
-
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(9)">Estimated <br> Revenue</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(10)">Estimated <br> Service Cost
-                                </th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(11)">Estimated <br> Material Cost
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="0">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
                                 </th>
 
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(12)">Estimated <br> Gross Profit
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Job<br>Adding
+                                            Status</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="1">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
                                 </th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(13)">Estimated <br> GrossProfit
-                                    Margin</th>
-                                <th class="py-2 px-4 border-b whitespace-nowrap text-center"
-                                    onclick="openColumnFilter(14)">Requester</th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Refcode
+                                            On ERP</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="2">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-base font-medium text-white/90">Site
+                                            Code</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="3">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-base font-medium text-white/90">Site
+                                            Name</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="4">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-base font-medium text-white/90">Job
+                                            <br> Description</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="5">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Project
+                                            Code</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="6">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-base font-medium text-white/90">Office
+                                            Code</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="7">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Customer<br>Region</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="8">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Estimated
+                                            <br> Revenue</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="9">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Estimated
+                                            <br> Service Cost</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="10">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Estimated
+                                            <br> Material Cost</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="11">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Estimated
+                                            <br> Gross Profit</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="12">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Estimated
+                                            <br> GrossProfit Margin</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="13">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th class="py-3 px-4 whitespace-nowrap text-center border-b border-blue-900 group">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span
+                                            class="tracking-wide font-sarabun text-base font-medium text-white/90">Requester</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="14">
+                                            <i class="fi fi-br-bars-filter text-base text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
                             </tr>
                         </thead>
                         <tbody>
@@ -629,23 +794,21 @@
                                         @endif
                                     </td>
 
-                                    <td>Ready/Not Ready</td>
+                                    <!--<td>Ready/Not Ready</td> -->
 
-                                    <script>
-                                        function toggleDropdown(btn) {
-                                            const dropdown = btn.nextElementSibling;
-                                            dropdown.classList.toggle('hidden');
-                                            document.querySelectorAll('.status-dropdown').forEach(d => {
-                                                if (d !== dropdown) d.classList.add('hidden');
-                                            });
-                                        }
+                                    <td class="px-4 border-b whitespace-nowrap text-center">
+                                        @php
+                                            // ใช้สีของ Rejected โดยตรง
+                                            $rejectColor = $statusColors['Rejected'];
+                                        @endphp
+                                        <span
+                                            class="inline-flex items-center justify-center {{ $rejectColor['bg'] }} {{ $rejectColor['text'] }} text-sm font-semibold px-2 py-1 rounded-full"
+                                            style="font-family: 'Sarabun', sans-serif;">
+                                            <span class="w-2 h-2 mr-1 {{ $rejectColor['dot'] }} rounded-full"></span>
+                                            Not Ready
+                                        </span>
+                                    </td>
 
-                                        document.addEventListener('click', function(e) {
-                                            if (!e.target.closest('.relative')) {
-                                                document.querySelectorAll('.status-dropdown').forEach(d => d.classList.add('hidden'));
-                                            }
-                                        });
-                                    </script>
 
 
 
@@ -679,12 +842,84 @@
                         </tbody>
                     </table>
                 </div>
+                <div id="listViewPagination"
+                    class="mt-4 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 p-5 bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-300">
+
+                    <div class="flex items-center space-x-3 order-2 lg:order-1">
+                        <label for="rowsPerPageList"
+                            class="text-xs font-bold font-sarabun uppercase tracking-widest text-gray-400">แสดงรายการ:</label>
+                        <div class="relative">
+                            <select id="rowsPerPageList" onchange="changeRowsPerPage(this.value)"
+                                class="block py-2 pl-4 pr-10 border border-gray-200 rounded-xl text-sm font-bold bg-gray-50 cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
+                                <option value="5">5 รายการ</option>
+                                <option value="10" selected>10 รายการ</option>
+                                <option value="20">20 รายการ</option>
+                            </select>
+                            {{-- Custom Arrow Icon --}}
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="flex items-center space-x-2 order-1 lg:order-2" aria-label="Pagination">
+                        {{-- Previous Button --}}
+                        <button id="prevPageBtnList" onclick="goToPage(currentPage - 1)"
+                            class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                            <i
+                                class="fa-solid fa-chevron-left text-xs transition-transform group-hover:-translate-x-0.5"></i>
+                        </button>
+
+                        {{-- Page Numbers Container --}}
+                        <div id="pageNumbersList" class="flex items-center space-x-1">
+                            {{-- ตัวอย่างปุ่ม Active --}}
+                            <button
+                                class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-md shadow-indigo-200">1</button>
+                            <button
+                                class="w-10 h-10 rounded-xl bg-white text-gray-600 font-semibold text-sm hover:bg-indigo-50 transition-all">2</button>
+                            <button
+                                class="w-10 h-10 rounded-xl bg-white text-gray-600 font-semibold text-sm hover:bg-indigo-50 transition-all">3</button>
+                        </div>
+
+                        {{-- Next Button --}}
+                        <button id="nextPageBtnList" onclick="goToPage(currentPage + 1)"
+                            class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                            <i
+                                class="fa-solid fa-chevron-right text-xs transition-transform group-hover:translate-x-0.5"></i>
+                        </button>
+                    </nav>
+
+                    <div class="order-3 text-right">
+                        <span id="paginationSummaryList"
+                            class="text-sm font-medium text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
+                            แสดง <span class="text-indigo-600 font-bold">1-10</span> จากทั้งหมด <span
+                                class="text-gray-900 font-bold">15</span> รายการ
+                        </span>
+                    </div>
+                </div>
             </div>
 
 
         </main>
     </div>
 
+
+    <script>
+        function toggleDropdown(btn) {
+            const dropdown = btn.nextElementSibling;
+            dropdown.classList.toggle('hidden');
+            document.querySelectorAll('.status-dropdown').forEach(d => {
+                if (d !== dropdown) d.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.relative')) {
+                document.querySelectorAll('.status-dropdown').forEach(d => d.classList.add('hidden'));
+            }
+        });
+    </script>
 
 
     <script>
@@ -734,6 +969,14 @@
                 }
             }
 
+            function formatMoney(num) {
+                return num.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+
             function openAddModal() {
                 modalInputs.forEach(input => input.value = '');
                 addModal.classList.remove('pointer-events-none', 'opacity-0');
@@ -759,19 +1002,69 @@
             });
 
             [revenueInput, serviceCostInput, materialCostInput].forEach(input => {
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === '-' || e.key === 'e') e.preventDefault();
+
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "e" || e.key === "-") e.preventDefault();
                 });
 
-                input.addEventListener('input', () => {
-                    input.value = input.value.replace(/[^0-9.]/g, '');
+                input.addEventListener("input", (e) => {
+                    const el = e.target;
+
+                    // ตำแหน่ง cursor เดิม
+                    let cursor = el.selectionStart;
+
+                    // นับ comma ก่อนหน้า cursor
+                    const beforeCursor = el.value.slice(0, cursor);
+                    const commasBefore = (beforeCursor.match(/,/g) || []).length;
+
+                    // เอา comma ออกก่อน parse
+                    let raw = el.value.replace(/,/g, "");
+
+                    // อนุญาต . แค่ตัวเดียว
+                    const parts = raw.split(".");
+                    if (parts.length > 2) {
+                        raw = parts[0] + "." + parts.slice(1).join("");
+                    }
+
+                    // edge case
+                    if (raw === "" || raw === ".") {
+                        el.value = "0.00";
+                        el.setSelectionRange(1, 1);
+                        return;
+                    }
+
+                    let num = parseFloat(raw);
+                    if (isNaN(num)) return;
+
+                    // format ใหม่
+                    const formatted = formatMoney(num);
+                    el.value = formatted;
+
+                    // นับ comma ใหม่
+                    const afterCursorValue = formatted;
+                    let newCursor = cursor + (
+                        (afterCursorValue.match(/,/g) || []).length - commasBefore
+                    );
+
+                    // กัน cursor หลุด
+                    newCursor = Math.max(0, Math.min(formatted.length, newCursor));
+                    el.setSelectionRange(newCursor, newCursor);
+
                     calculateGross(false);
                 });
 
-                input.addEventListener('blur', () => {
+                input.addEventListener("blur", () => {
+                    if (!input.value) return;
+
+                    const num = parseFloat(input.value.replace(/,/g, ""));
+                    if (!isNaN(num)) {
+                        input.value = formatMoney(num);
+                    }
+
                     calculateGross(true);
                 });
             });
+
 
             /* ===========================
                MODAL: IMPORT JOB
@@ -810,7 +1103,384 @@
         }); // END DOMContentLoaded
     </script>
 
+
+
+
+
+
+
+    <!-- ก้อน Filter ที่ใช้ทุกคอลั่ม -->
+    <div id="column-filter-modal" class="fixed inset-0 z-[100] hidden bg-transparent">
+        <div id="column-filter-content" onclick="event.stopPropagation()"
+            class="shadow-2xl bg-white rounded-xl flex flex-col w-[300px] absolute border border-gray-100">
+
+            <!-- Search Input -->
+            <div class="px-4 py-3 border-b border-gray-100">
+                <div class="relative">
+                    <i data-lucide="search"
+                        class="fa-solid fa-magnifying-glass w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                    <input type="text" id="column-filter-search" placeholder=""
+                        class="pl-9 pr-3 w-full h-9 outline-none bg-gray-50 border border-gray-200 rounded-lg text-sm transition-all focus:border-blue-400 focus:bg-white"
+                        oninput="handleSearch(this.value)">
+                </div>
+            </div>
+
+            <!-- Selection and Sorting Controls -->
+            <div class="px-4 pt-3 pb-2 border-b border-gray-100">
+                <!-- Select / Deselect All -->
+                <div class="flex justify-between space-x-2 mb-3">
+                    <button type="button" id="selectAllFilter" onclick="selectAll()"
+                        class="w-1/2 text-xs text-center bg-green-300 hover:bg-green-400 text-gray-800 rounded py-1">
+                        Select All
+                    </button>
+                    <button type="button" id="deselectAllFilter" onclick="deselectAll()"
+                        class="w-1/2 text-xs text-center bg-red-300 hover:bg-red-400 text-gray-800 rounded py-1">
+                        Deselect All
+                    </button>
+                </div>
+
+                <!-- Sort Buttons -->
+                <div class="flex justify-between space-x-2">
+                    <button type="button" onclick="sortAZ()"
+                        class="w-1/2 text-xs text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                        <i data-lucide="arrow-down-a-to-z" class="w-3.5 h-3.5"></i>
+                        <span>Sort A &rarr; Z</span>
+                    </button>
+                    <button type="button" onclick="sortZA()"
+                        class="w-1/2 text-xs text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                        <i data-lucide="arrow-up-z-to-a" class="w-3.5 h-3.5"></i>
+                        <span>Sort Z &rarr; A</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Checkbox List -->
+            <div id="column-filter-checkbox-list" class="overflow-y-auto px-4 py-2 text-sm max-h-60 flex-grow">
+                <!-- Checkboxes generated by JS -->
+            </div>
+
+            <!-- Apply / Cancel Footer -->
+            <div class="flex justify-end space-x-2 border-t px-4 py-3 bg-gray-50 rounded-b-xl">
+                <button type="button" onclick="applyColumnFilter()"
+                    class="bg-blue-600 text-white px-4 py-2 text-xs rounded-lg font-semibold hover:bg-blue-700 transition shadow-md">OK</button>
+                <button type="button" onclick="closeColumnFilterModal()"
+                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 text-xs rounded-lg font-semibold hover:bg-gray-100 transition shadow-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ฟังชั่น Filter  -->
     <script>
+        /* -----------------------------------------------------
+       ICON CONFIG
+    ----------------------------------------------------- */
+        const ICONS = {
+            normal: `<i class="fi fi-br-bars-filter text-white transition duration-150"></i>`,
+            active: `<i class="fi fi-br-bars-filter text-white transition duration-150"></i>`,
+            filter: `<i class="fi fi-br-bars-filter text-blue-400 transition duration-150"></i>`
+        };
+
+        /* -----------------------------------------------------
+           GLOBAL STATE
+        ----------------------------------------------------- */
+        let openFilterColumn = null;
+        let filters = {}; // filters[col] = array OR null
+        let originalColumnValues = {}; // ค่าทั้งหมดในแต่ละคอลัมน์ (สำหรับ Checkbox list)
+
+        let allRows = []; // ทุก tr ใน tbody (ต้นฉบับ)
+        let visibleRows = []; // tr ที่ผ่าน filter (สำหรับ pagination)
+        let totalRows = 0;
+
+        let rowsPerPage = 10;
+        let currentPage = 1;
+
+        /* -----------------------------------------------------
+           INITIAL LOAD
+        ----------------------------------------------------- */
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".filter-icon").forEach(icon => {
+                icon.addEventListener("click", e => {
+                    e.stopPropagation(); // ❗ สำคัญมาก ป้องกันเปิดซ้อน
+                    openColumnFilter(Number(icon.dataset.col));
+                });
+            });
+
+
+
+            /* เก็บค่าต้นทางทั้งหมด (แบบ Excel) */
+            const trs = Array.from(document.querySelectorAll("tbody tr"));
+            const colCount = document.querySelectorAll("thead th").length;
+
+            for (let i = 0; i < colCount; i++) originalColumnValues[i] = new Set();
+
+            trs.forEach(row => {
+                [...row.children].forEach((cell, col) => {
+                    originalColumnValues[col].add(cell.innerText.trim());
+                });
+            });
+
+            allRows = trs;
+            // ตอนเริ่มต้น visibleRows = allRows
+            visibleRows = allRows.slice();
+            totalRows = visibleRows.length;
+
+            setupRowsPerPageOptions();
+            renderPagination();
+        });
+
+        /* -----------------------------------------------------
+           FILTER
+        ----------------------------------------------------- */
+        function openColumnFilter(colIndex) {
+            if (openFilterColumn === colIndex) {
+                closeColumnFilterModal(false);
+                return;
+            }
+
+            openFilterColumn = colIndex;
+            loadFilterValues(colIndex);
+
+            document.querySelectorAll(".filter-icon").forEach(x => {
+                x.classList.toggle("filter-active", Number(x.dataset.col) === colIndex);
+            });
+
+            showFilterModal(
+                document.querySelector(`.filter-icon[data-col="${colIndex}"]`)
+            );
+        }
+
+
+
+
+        function showFilterModal(icon) {
+            const modal = document.getElementById("column-filter-modal");
+            const box = document.getElementById("column-filter-content");
+
+            modal.classList.remove("hidden");
+
+            const rect = icon.getBoundingClientRect();
+            const boxWidth = 300; // ความกว้าง filter popup ของคุณ
+            const screenWidth = window.innerWidth;
+
+            let left = rect.left;
+
+            // ถ้าจะล้นจอ → ขยับไปทางซ้าย
+            if (left + boxWidth > screenWidth - 10) {
+                left = screenWidth - boxWidth - 10;
+            }
+
+            box.style.left = `${left}px`;
+            box.style.top = `${rect.bottom + window.scrollY}px`;
+        }
+
+
+        function loadFilterValues(colIndex) {
+            const list = document.getElementById("column-filter-checkbox-list");
+            list.innerHTML = "";
+
+            // --- ต้องแสดงค่าทั้งหมดในคอลัมน์นี้เสมอ (เหมือน Excel) ---
+            const values = [...originalColumnValues[colIndex]].sort((a, b) =>
+                a.localeCompare(b, undefined, {
+                    numeric: true
+                })
+            );
+
+            const selected = filters[colIndex] || null;
+
+            values.forEach(v => {
+                list.innerHTML += `
+            <label class="flex items-center space-x-2 py-1">
+                <input type="checkbox" class="filter-checkbox" value="${v}"
+                    ${(selected === null || selected.includes(v)) ? "checked" : ""}>
+                <span>${v}</span>
+            </label>
+        `;
+            });
+        }
+
+
+
+        function handleSearch(text) {
+            const list = document.getElementById("column-filter-checkbox-list");
+            const keyword = text.toLowerCase().trim();
+
+            const items = list.querySelectorAll("label");
+
+            items.forEach(label => {
+                const value = label.querySelector("span").innerText.toLowerCase();
+                label.style.display = (value.includes(keyword)) ? "" : "none";
+            });
+        }
+
+
+        function selectAll() {
+            document.querySelectorAll("#column-filter-checkbox-list .filter-checkbox")
+                .forEach(cb => cb.checked = true);
+        }
+
+        function deselectAll() {
+            document.querySelectorAll("#column-filter-checkbox-list .filter-checkbox")
+                .forEach(cb => cb.checked = false);
+        }
+
+        function sortAZ() {
+            sortTable(openFilterColumn, 'asc');
+        }
+
+
+        function sortZA() {
+            sortTable(openFilterColumn, 'desc');
+        }
+
+
+
+
+        function applyColumnFilter() {
+            const col = openFilterColumn;
+
+            const checkboxes = document.querySelectorAll(".filter-checkbox");
+            const selected = [...checkboxes]
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const total = checkboxes.length;
+
+            // 🔑 ถ้าเลือกทั้งหมด หรือไม่ได้เลือกอะไรเลย = ไม่มี filter
+            if (selected.length === 0 || selected.length === total) {
+                filters[col] = null;
+            } else {
+                filters[col] = selected;
+            }
+
+            applyAllFilters();
+            closeColumnFilterModal(false);
+        }
+
+
+
+
+
+        function applyAllFilters() {
+            // เริ่มจาก allRows เสมอ แล้วคัดเฉพาะที่ผ่าน filter
+            visibleRows = allRows.filter(row => {
+                for (let colKey in filters) {
+                    const allowed = filters[colKey];
+                    if (!allowed) continue;
+                    const colIndex = Number(colKey);
+                    const value = (row.children[colIndex] && row.children[colIndex].innerText) ? row.children[
+                        colIndex].innerText.trim() : "";
+                    if (!allowed.includes(value)) return false;
+                }
+                return true;
+            });
+
+            totalRows = visibleRows.length;
+
+            // reset pagination
+            currentPage = 1;
+            renderPagination();
+
+            // update icons (in case filters cleared)
+            document.querySelectorAll(".filter-icon").forEach(x => {
+                const idx = x.dataset.col;
+                x.classList.toggle("filter-active", !!filters[idx]);
+            });
+
+        }
+
+        function closeColumnFilterModal(resetIcon = true) {
+            document.getElementById("column-filter-modal").classList.add("hidden");
+
+            if (resetIcon && openFilterColumn != null) {
+                const icon = document.querySelector(`.filter-icon[data-col="${openFilterColumn}"]`);
+                icon.innerHTML = filters[openFilterColumn] ? ICONS.filter : ICONS.normal;
+            }
+
+
+            openFilterColumn = null;
+        }
+
+
+        /* ปิด modal เมื่อคลิกข้างนอก */
+        document.addEventListener("mousedown", e => {
+            const modal = document.getElementById("column-filter-modal");
+            if (modal.classList.contains("hidden")) return;
+
+            const box = document.getElementById("column-filter-content");
+            if (!box.contains(e.target)) closeColumnFilterModal();
+        });
+
+        /* -----------------------------------------------------
+           PAGINATION (ทำงานร่วมกับ Filter)
+        ----------------------------------------------------- */
+        function setupRowsPerPageOptions() {
+            const select = document.getElementById("rowsPerPageList");
+            if (!select) return;
+            select.innerHTML = "";
+
+            const presets = [5, 10, 20, 50, 100];
+
+            presets.forEach(n => {
+                if (n < allRows.length) {
+                    let opt = document.createElement("option");
+                    opt.value = n;
+                    opt.textContent = `${n} แถว`;
+                    select.appendChild(opt);
+                }
+            });
+
+            let allOpt = document.createElement("option");
+            allOpt.value = allRows.length;
+            allOpt.textContent = `ทั้งหมด (${allRows.length} แถว)`;
+            select.appendChild(allOpt);
+
+            select.value = rowsPerPage;
+        }
+
+        function renderPagination() {
+            // ป้องกัน totalPages = 0
+            const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            /* ซ่อนทั้งหมดก่อน */
+            allRows.forEach(r => r.style.display = "none");
+
+            /* คำนวณขอบเขตและแสดงเฉพาะ visibleRows ในช่วงหน้า */
+            if (totalRows === 0) {
+                document.getElementById("paginationSummaryList").innerText = `แสดง 0-0 จากทั้งหมด 0 รายการ`;
+            } else {
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                visibleRows.slice(start, end).forEach(r => r.style.display = "");
+                document.getElementById("paginationSummaryList").innerText =
+                    `แสดง ${start + 1}-${Math.min(end, totalRows)} จากทั้งหมด ${totalRows} รายการ`;
+            }
+
+            /* ปุ่ม pagination */
+            document.getElementById("prevPageBtnList").disabled = currentPage === 1;
+            document.getElementById("nextPageBtnList").disabled = currentPage >= totalPages;
+
+            const pageContainer = document.getElementById("pageNumbersList");
+            if (pageContainer) {
+                pageContainer.innerHTML = "";
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className =
+                        "px-3 py-1 rounded-lg text-sm font-semibold transition " +
+                        (i === currentPage ?
+                            "bg-indigo-600 text-white" :
+                            "bg-white border border-gray-300 text-indigo-600 hover:bg-indigo-100");
+                    btn.onclick = () => goToPage(i);
+                    pageContainer.appendChild(btn);
+                }
+            }
+        }
+
         function goToPage(page) {
             currentPage = page;
             renderPagination();
@@ -823,7 +1493,6 @@
         }
     </script>
 
-    </script>
 
     <!-- ฟังชั่น Sort A -> Z Sort Z -> A -->
     <script>
@@ -852,6 +1521,13 @@
         }
     </script>
 
+
+
+
+
+
+
+    <!-- ฟังชันสำหรับ Export -->
     <script>
         function exportPOToExcel() {
             const table = document.querySelector("table");
@@ -899,6 +1575,37 @@
         }
     </script>
 
+
+
+    <script>
+        const notifBtn = document.getElementById('notification-button');
+        const notifDropdown = document.getElementById('notification-dropdown');
+
+        notifBtn.addEventListener('click', () => {
+            notifDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!notifBtn.contains(event.target) && !notifDropdown.contains(event.target)) {
+                notifDropdown.classList.add('hidden');
+            }
+        });
+    </script>
+
+
+
+    <script>
+        const revenueInput = document.getElementById('estimated_revenue');
+
+        revenueInput.addEventListener('blur', function() {
+            let val = this.value.replace(/,/g, '').trim();
+
+            if (val === '' || parseFloat(val) === 0) {
+                alert('Estimated Revenue ห้ามเว้นว่างหรือกรอก 0! ตั้งค่าเริ่มต้นเป็น 1 ให้แล้ว');
+                this.value = 1;
+            }
+        });
+    </script>
 
 
 @endsection

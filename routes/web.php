@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\AddJobcontroller;
 use App\Http\Controllers\Admincontroller;
 use App\Http\Controllers\Auth\RegisterController;
@@ -19,9 +18,14 @@ use App\Http\Middleware\CheckStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+//PO
+use App\Http\Controllers\PurchaseOrderController;
+
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
+
 
 //Collab HUB
 
@@ -45,19 +49,6 @@ Route::post('user/permissions/save/{project_code}', [UserProjectDatabasescontrol
 
 // Inline update for collab_newjob
 Route::post('user/newjob/inline-update', [UserProjectDatabasescontroller::class, 'inlineUpdate'])->name('newjob.inlineUpdate');
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -124,11 +115,23 @@ Route::put('/update-status/{user}', [App\Http\Controllers\HomeController::class,
 Route::post('/register', [RegisterController::class, 'register'])->name('register');            // status = 4
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register'); // status = 4
 
+
 //test
 /*
 Route::get('/test/are', [Dropdowncontroller::class, 'total'])->name('are');
 Route::get('/test/user', [Dropdowncontroller::class, 'user'])->name('user');
 */
+
+
+
+
+
+
+
+
+
+
+
 
 // Module ERP
 
@@ -147,8 +150,9 @@ Route::post('refcode/saverefcode', [Refcodecontroller::class, 'saveAdd']);
 Route::get('/export-refcode', [RefcodeController::class, 'exportRefcode'])->name('exportRefcode');
 
 // import billing
+// Billing
 Route::get('billing/home', [Billingcontroller::class, 'index'])->name('billing.home');
-Route::post('billing/home', [Billingcontroller::class, 'importbilling'])->name('billing.home');
+Route::post('billing/import', [Billingcontroller::class, 'importbilling'])->name('billing.import');
 Route::post('/savebilling', [Billingcontroller::class, 'savebilling'])->name('billing.savebilling');
 Route::get('billing/search', [Billingcontroller::class, 'search'])->name('billing.search');
 
@@ -222,3 +226,74 @@ Route::get('/sum', [ImportItemController::class, 'summary'])->name('sum')->middl
 //Region
 Route::get('/region', [ImportItemController::class, 'region'])->middleware(CheckInventory::class);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+////////////////////////////////////////////////////////แผนก PO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+// หน้าแสดงรายการ PO
+Route::get('/PO/purchase', [PurchaseOrderController::class, 'index']) ->name('purchase-orders.index');
+
+
+// บันทึก PO ใหม่
+Route::post('/purchase-orders/store', [PurchaseOrderController::class, 'store']) ->name('purchase-orders.store');
+
+
+
+// แสดงรายละเอียด PO
+Route::get('/purchase-order/show/{id}', [PurchaseOrderController::class, 'show'])->name('purchase-order.show');
+
+Route::post('/purchase-order/save', [PurchaseOrderController::class, 'save'])->name('purchase-order.save');
+
+Route::get('/po-items/{id}', [PurchaseOrderController::class, 'fetchPoItems']);
+
+
+// importItems
+Route::post('/import-items', [PurchaseOrderController::class, 'importItems']);
+
+Route::post('/check-items-duplicates', [PurchaseOrderController::class, 'checkItemsDuplicates']);
+
+
+
+
+
+
+
+
+
+
+
+
+// (หน้า Form สำหรับสร้าง PO)
+Route::get('/purchase-orders/create', [PurchaseOrderController::class, 'create']) ->name('purchase-orders.create');
+
+
+
+        
+
+
+
+        // ดึงข้อมูลจาก Filter (PO No / Date / Customer)
+Route::get('/purchase-order/get-data', [PurchaseOrderController::class, 'getPoData'])
+        ->name('purchase-order.getData');
+
+// Import Items (Excel → Database)
+Route::post('/purchase-order/import-items', [PurchaseOrderController::class, 'importItems'])
+        ->name('purchase-order.import-items');
+
+// Import PO Items (แบบ AJAX)
+Route::post('/purchase-order/import', [PurchaseOrderController::class, 'import'])
+        ->name('purchase-order.import');
+
+// Export Excel
+Route::get('/items/export', [PurchaseOrderController::class, 'export'])
+        ->name('items.export');
+
+// Check Import ก่อนบันทึกจริง
+Route::post('/items/check-import', [PurchaseOrderController::class, 'checkImport'])
+        ->name('items.check-import');
+
+
+
+
+
+
