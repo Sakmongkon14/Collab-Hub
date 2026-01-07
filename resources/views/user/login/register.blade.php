@@ -114,12 +114,7 @@
                                                                         <option value="Admin">Admin</option>
                                                                     </select>
 
-
-
                                                                 </td>
-
-
-
 
                                                                 <td class="text-center">
                                                                     <form action="{{ route('user.delete', $user->id) }}"
@@ -261,7 +256,7 @@
                                         <div class="col-md-6">
                                             <select id="status" name="status" class="form-control" required>
                                                 <option value="" disabled selected>เลือก Office Code</option>
-                                                <option value="4">Admin</option>
+                                                <option value="Admin">Admin</option>
                                                 @foreach ($officecodes as $code)
                                                     <option value="{{ $code }}">{{ $code }}</option>
                                                 @endforeach

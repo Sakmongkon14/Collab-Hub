@@ -124,6 +124,21 @@
         }
     </style>
 
+    <!-- Hover สำหรับ Filter -->
+    <style>
+        .filter-active i {
+            color: #60a5fa !important;
+        }
+
+        thead th:hover .filter-icon:not(.filter-active) i {
+            color: #93c5fd;
+        }
+
+        .font-sarabun {
+            font-family: 'Sarabun', sans-serif !important;
+        }
+    </style>
+
     <!-- สคริปต์จัดการ input เงิน -->
     <script>
         function parseMoney(val) {
@@ -178,16 +193,11 @@
 
 
 
+    <!-- Main Content -->
+    <main class="flex-1 p-1 bg-gray-100 overflow-y-auto">
 
 
-
-
-    <div class="flex h-[calc(100vh-64px)] overflow-hidden">
-
-
-        <!-- Main Content -->
-        <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
-
+        <div class="bg-white p-4 rounded-xl shadow-md min-h-[680px]">
 
             <div>
                 <h2 class="text-center my-3 text-2xl font-bold">
@@ -211,20 +221,27 @@
                     </div>
 
                     {{-- 2. ปุ่ม Permission (อยู่ทางขวา) --}}
-                    <div class="order-1 sm:order-2 flex items-center gap-3">
 
-                        <button onclick="document.getElementById('permissionModal').classList.remove('hidden')"
-                            class="group flex items-center px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-bold text-sm rounded-xl shadow-[0_2px_10px_-3px_rgba(79,70,229,0.2)]
+                    @php
+                        $isAdmin = Auth::check() && Auth::user()->status === 'Admin';
+                    @endphp
+
+                    @if ($isAdmin)
+                        <div class="order-1 sm:order-2 flex items-center gap-3">
+
+                            <button onclick="document.getElementById('permissionModal').classList.remove('hidden')"
+                                class="group flex items-center px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-bold text-sm rounded-xl shadow-[0_2px_10px_-3px_rgba(79,70,229,0.2)]
            hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0
            transition-all duration-300 ease-out">
 
-                            {{-- Icon with animation on hover --}}
-                            <i
-                                class="fas fa-user-shield mr-2.5 text-base transition-transform duration-300 group-hover:rotate-12"></i>
+                                {{-- Icon with animation on hover --}}
+                                <i
+                                    class="fas fa-user-shield mr-2.5 text-base transition-transform duration-300 group-hover:rotate-12"></i>
 
-                            <span class="tracking-wide">Permission</span>
-                        </button>
-                    </div>
+                                <span class="tracking-wide">Permission</span>
+                            </button>
+                        </div>
+                    @endif
 
                 </div>
             </div>
@@ -237,7 +254,7 @@
 
 
                 <div id="permissionModal"
-                    class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+                    class="fixed inset-0 z-[500] hidden bg-black bg-opacity-50 flex items-center justify-center ">
                     <div class="bg-white w-full max-w-[1200px] h-[80vh] rounded-xl shadow-lg overflow-hidden flex flex-col">
 
                         <!-- Header -->
@@ -269,9 +286,11 @@
                                                 Material Cost</th>
 
                                             <!-- Read / invisible   -->
-                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated Gross
+                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated
+                                                Gross
                                                 Profit</th>
-                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated Gross
+                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated
+                                                Gross
                                                 Profit Margin</th>
 
                                             <th class="border px-2 w-[100px] bg-red-400 text-white">Col1</th>
@@ -435,7 +454,9 @@
                                                             data-user-id="{{ $user->id }}">
 
                                                             <option value="invisible"
-                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? 'invisible') === 'invisible' ? 'selected' : '' }}>
+                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? 'invisible') === 'invisible'
+                                                                    ? 'selected'
+                                                                    : '' }}>
                                                                 Invisible
                                                             </option>
 
@@ -581,29 +602,99 @@
                 @endphp
 
 
-                <div class="table-container">
-                    <table class="table" id="table">
+                <div class="table-container min-h-[490px] max-h-[490px] overflow-auto">
+
+
+                    <table
+                        class="table min-w-max table-fixed border-separate border-spacing-0 font-sarabun
+                            [--col-1:111px]
+                            [--col-2:130px]"
+                        id="table">
                         <thead>
-                            <tr style="font-size:12px; text-align:center;">
-                                <th>Refcode</th>
-                                <th>Site Code</th>
-                                <th>Job Description</th>
-                                <th>Office Code</th>
+                            <tr class="text-xs text-center">
+
+                                <th
+                                    class=" whitespace-nowrap text-center border-b border-blue-900 group sticky top-0 left-0 z-[150] bg-blue-950 w-[var(--col-1)]">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs  text-white/90">Refcode</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="0">
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th
+                                    class=" whitespace-nowrap text-center border-b border-blue-900 group sticky top-0 left-[var(--col-1)] z-[140] bg-blue-950 w-[var(--col-2)]">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs  text-white/90">Site Code</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="1">
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class=" whitespace-nowrap text-center border-b border-blue-900">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs text-white/90">Job
+                                            Description</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="2">
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
+                                <th class="whitespace-nowrap text-center border-b border-blue-900">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs text-white/90">Office
+                                            Code</span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60 group-hover:opacity-100 transition-opacity"
+                                            data-col="3">
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
+                                </th>
+
+
 
                                 {{-- ===== Project Columns (thead) ===== --}}
+                                @php $colIndex = 4; @endphp
+
                                 @foreach ($projectCols as $field => $label)
                                     @php
                                         $visibility = $permissions[Auth::id()]->$field ?? 'invisible';
+                                        $isMoney = in_array($field, $moneyFields);
                                     @endphp
 
-                                    <th
-                                        style="
-                            background:green;
-                            color:white;
-                            {{ $visibility === 'invisible' ? 'display:none;' : '' }}
-                        ">
-                                        {{ $label }}
+                                    <th class="whitespace-nowrap text-center border-b border-blue-900 group"
+                                        style="background:green;color:white;{{ $visibility === 'invisible' ? 'display:none;' : '' }}">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <span class="tracking-wide font-sarabun text-xs text-white/90">
+                                                {{ $label }}
+                                            </span>
+
+                                            <span
+                                                class="filter-icon cursor-pointer inline-flex items-center opacity-60
+                   group-hover:opacity-100 transition-opacity"
+                                                data-col="{{ $colIndex }}"
+                                                data-type="{{ $isMoney ? 'money' : 'text' }}">
+                                                <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                            </span>
+                                        </div>
                                     </th>
+                                    @php $colIndex++; @endphp
                                 @endforeach
 
 
@@ -613,17 +704,45 @@
                                         $permissions[Auth::id()]->Estimated_Gross_Profit_Margin_PJ ?? 'invisible';
                                 @endphp
 
-                                <th class="border px-2 w-[140px]"
-                                    style="background-color: blue; color:white;
+                                {{-- ===== Estimated Gross Profit ===== --}}
+                                <th class="whitespace-nowrap text-center border-b border-blue-900 group"
+                                    style="background-color:blue;color:white;
            {{ $gpVisibility === 'invisible' ? 'display:none;' : '' }}">
-                                    Estimated Gross Profit
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs text-white/90">
+                                            Estimated Gross Profit
+                                        </span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60
+                   group-hover:opacity-100 transition-opacity"
+                                            data-col="{{ $colIndex }}" data-type="money">
+                                            @php $colIndex++; @endphp
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
                                 </th>
 
-                                <th class="border px-2 w-[140px]"
-                                    style="background-color: blue; color:white;
+                                {{-- ===== Estimated Gross Profit Margin ===== --}}
+                                <th class="whitespace-nowrap text-center border-b border-blue-900 group"
+                                    style="background-color:blue;color:white;
            {{ $gmVisibility === 'invisible' ? 'display:none;' : '' }}">
-                                    Estimated Gross Profit Margin
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="tracking-wide font-sarabun text-xs text-white/90">
+                                            Estimated Gross Profit Margin
+                                        </span>
+
+                                        <span
+                                            class="filter-icon cursor-pointer inline-flex items-center opacity-60
+                   group-hover:opacity-100 transition-opacity"
+                                            data-col="{{ $colIndex }}" data-type="money">
+                                            @php $colIndex++; @endphp
+                                            <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                        </span>
+                                    </div>
                                 </th>
+
+
 
 
                                 {{-- ===== col 1–50 (thead) ===== --}}
@@ -632,24 +751,50 @@
                                         $col = "col$i";
                                         $visibility = $permissions[Auth::id()]->$col ?? 'invisible';
                                     @endphp
-                                    <th
-                                        style="
-                            background:red;
-                            color:white;
-                            {{ $visibility === 'invisible' ? 'display:none;' : '' }}
-                        ">
-                                        Col {{ $i }}
+
+                                    <th class="whitespace-nowrap text-center border-b border-blue-900 group"
+                                        style="background:red;color:white;
+        {{ $visibility === 'invisible' ? 'display:none;' : '' }}">
+
+                                        <div class="flex items-center justify-center gap-2">
+                                            <span class="tracking-wide font-sarabun text-xs text-white/90">
+                                                Col {{ $i }}
+                                            </span>
+
+                                            <span
+                                                class="filter-icon cursor-pointer inline-flex items-center opacity-60
+                  group-hover:opacity-100 transition-opacity"
+                                                data-col="{{ $colIndex }}" data-type="text">
+                                                <i class="fi fi-br-bars-filter text-xs text-white"></i>
+                                            </span>
+                                        </div>
                                     </th>
+
+                                    @php $colIndex++; @endphp
                                 @endfor
+
+
                             </tr>
                         </thead>
 
-                        <tbody>
-                            @foreach ($projectData as $item)
-                                <tr style="font-size:10px; text-align:center;">
+                        <tbody id="tableBody">
 
-                                    <td>{{ $item->Refcode_PJ }}</td>
-                                    <td>{{ $item->Site_Code_PJ }}</td>
+                            @foreach ($projectData as $item)
+                                <tr
+                                    class="group bg-white hover:bg-red-100 transition-colors font-sarabun duration-200 text-[10px]">
+
+                                    {{-- Refcode --}}
+                                    <td
+                                        class="sticky left-0 z-[120] w-[var(--col-1)] bg-white px-2 py-1 whitespace-nowrap text-center group-hover:bg-red-100 transition">
+                                        {{ $item->Refcode_PJ }}
+                                    </td>
+
+                                    {{-- Site Code --}}
+                                    <td
+                                        class="sticky left-[var(--col-1)] z-[110] w-[var(--col-2)] bg-white px-2 py-1 whitespace-nowrap text-center group-hover:bg-red-100 transition">
+                                        {{ $item->Site_Code_PJ }}
+                                    </td>
+
                                     <td>{{ $item->Job_Description_PJ }}</td>
                                     <td>{{ $item->Office_Code_PJ }}</td>
 
@@ -736,11 +881,146 @@
                     </table>
                 </div>
 
+            </div>
 
+            <div id="listViewPagination"
+                class="mt-4 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 p-5 bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-300">
+
+                <div class="flex items-center space-x-3 order-2 lg:order-1">
+                    <label for="rowsPerPageList"
+                        class="font-sarabun text-xs font-medium tracking-wide text-gray-600">แสดงรายการ:</label>
+                    <div class="relative">
+                        <select id="rowsPerPageList" onchange="changeRowsPerPage(this.value)"
+                            class="block py-2 pl-4 pr-10 border border-gray-200 rounded-xl text-xs font-sarabun bg-gray-50 cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
+                            <option value="10" selected>10 รายการ</option>
+                            <option value="20">20 รายการ</option>
+                        </select>
+                        {{-- Custom Arrow Icon --}}
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="flex items-center space-x-2 order-1 lg:order-2" aria-label="Pagination">
+                    {{-- Previous Button --}}
+                    <button id="prevPageBtnList" onclick="goToPage(currentPage - 1)"
+                        class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                        <i class="fa-solid fa-chevron-left text-xs transition-transform group-hover:-translate-x-0.5"></i>
+                    </button>
+
+                    {{-- Page Numbers Container --}}
+                    <div id="pageNumbersList" class="flex items-center space-x-1">
+                        {{-- ตัวอย่างปุ่ม Active --}}
+                        <button
+                            class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-sarabun text-sm shadow-md shadow-indigo-200">1</button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">2</button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">3</button>
+                    </div>
+
+                    {{-- Next Button --}}
+                    <button id="nextPageBtnList" onclick="goToPage(currentPage + 1)"
+                        class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                        <i class="fa-solid fa-chevron-right text-xs transition-transform group-hover:translate-x-0.5"></i>
+                    </button>
+                </nav>
+
+                <div class="order-3 text-right">
+                    <span id="paginationSummaryList"
+                        class="text-xs font-sarabun text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
+                        แสดง <span class="text-indigo-600 font-sarabun">1-10</span> จากทั้งหมด <span
+                            class="text-gray-900 font-sarabun">15</span> รายการ
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ก้อน Filter ที่ใช้ทุกคอลั่ม -->
+    <div id="column-filter-modal" class="fixed inset-0 z-[300] hidden bg-transparent">
+        <div id="column-filter-content" onclick="event.stopPropagation()"
+            class="shadow-2xl bg-white rounded-xl flex flex-col w-[300px] h-[450px] absolute border border-gray-100">
+
+
+            <div class="px-2 pt-2">
+                <button type="button" onclick="clearColumnFilterExcel()"
+                    class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
+                    <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                    </div>
+                    <span>Clear Filter from this column</span>
+                </button>
+            </div>
+
+            <div class="px-2 pt-2">
+                <button type="button" onclick="clearAllTableFilters()"
+                    class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
+                    <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
+                        <i class="fa-solid fa-broom"></i>
+                    </div>
+                    <span>Clear Filter from all columns</span>
+                </button>
             </div>
 
 
-        </main>
+
+            <!-- Selection and Sorting Controls -->
+            <div class="px-4 pt-3 pb-2 border-b border-gray-100">
+                <!-- Select / Deselect All -->
+                <div class="flex justify-between space-x-2 mb-3">
+                    <button type="button" id="selectAllFilter" onclick="selectAll()"
+                        class="w-1/2 text-xs font-sarabun text-center bg-green-300 hover:bg-green-400 text-gray-800 rounded py-1">
+                        Select All
+                    </button>
+                    <button type="button" id="deselectAllFilter" onclick="deselectAll()"
+                        class="w-1/2 text-xs font-sarabun text-center bg-red-300 hover:bg-red-400 text-gray-800 rounded py-1">
+                        Deselect All
+                    </button>
+                </div>
+
+                <!-- Sort Buttons -->
+                <div class="flex justify-between space-x-2">
+                    <button type="button" onclick="sortAZ()"
+                        class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                        <i data-lucide="arrow-down-a-to-z" class="w-3.5 h-3.5"></i>
+                        <span>Sort A &rarr; Z</span>
+                    </button>
+                    <button type="button" onclick="sortZA()"
+                        class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                        <i data-lucide="arrow-up-z-to-a" class="w-3.5 h-3.5"></i>
+                        <span>Sort Z &rarr; A</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Input -->
+            <div class="px-4 py-3 border-b border-gray-100">
+                <div class="relative">
+                    <i data-lucide="search"
+                        class="fa-solid fa-magnifying-glass w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                    <input type="text" id="column-filter-search" placeholder=""
+                        class="pl-9 pr-3 w-full h-9 outline-none bg-gray-50 border border-gray-200 rounded-lg text-sm transition-all focus:border-blue-400 focus:bg-white"
+                        oninput="handleSearch(this.value)" onkeydown="handleSearchEnter(event)">
+                </div>
+            </div>
+
+            <!-- Checkbox List -->
+            <div id="column-filter-checkbox-list"
+                class="overflow-y-auto font-sarabun px-4 py-2 text-sm max-h-60 flex-grow">
+                <!-- Checkboxes generated by JS -->
+            </div>
+
+            <!-- Apply / Cancel Footer -->
+            <div class="flex justify-end space-x-2 border-t px-4 py-3 bg-gray-50 rounded-b-xl">
+                <button type="button" onclick="applyColumnFilter()"
+                    class="bg-blue-600 text-white px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-blue-700 transition shadow-md">OK</button>
+                <button type="button" onclick="closeColumnFilterModal()"
+                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-gray-100 transition shadow-sm">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1042,12 +1322,528 @@
     </script>
 
 
+    <!-- ฟังชั่น Filter  -->
+    <script>
+        let openFilterColumn = null;
+        let filters = {}; // filters[col] = array OR null
+        let originalColumnValues = {}; // ค่าทั้งหมดในแต่ละคอลัมน์ (สำหรับ Checkbox list)
+
+        let allRows = []; // ทุก tr ใน tbody (ต้นฉบับ)
+        let visibleRows = []; // tr ที่ผ่าน filter (สำหรับ pagination)
+        let totalRows = 0;
+
+        let rowsPerPage = 10;
+        let currentPage = 1;
+
+
+
+
+        /* -----------------------------------------------------
+           INITIAL LOAD
+        ----------------------------------------------------- */
+
+        const ICONS = {
+            normal: `<i class="fi fi-br-bars-filter text-xs text-gray-300 transition duration-150"></i>`,
+            filter: `<i class="fi fi-br-bars-filter text-xs text-blue-500 transition duration-150"></i>`,
+            sortAsc: `<i class="fa-solid fa-arrow-down-a-z text-xs text-indigo-500 transition duration-150"></i>`,
+            sortDesc: `<i class="fa-solid fa-arrow-down-z-a text-xs text-indigo-500 transition duration-150"></i>`
+        };
 
 
 
 
 
+        document.addEventListener("DOMContentLoaded", () => {
 
+            const trs = Array.from(document.querySelectorAll("#tableBody tr"));
+            allRows = trs;
+            visibleRows = allRows.slice();
+            totalRows = visibleRows.length;
+
+            rowsPerPage = 10;
+            currentPage = 1;
+
+            setupRowsPerPageOptions();
+            renderPagination();
+
+            // ✅ ผูก click ให้ filter icon ทุกคอลัมน์
+            document.querySelectorAll(".filter-icon").forEach(icon => {
+                icon.addEventListener("click", e => {
+                    e.stopPropagation(); // กัน modal ปิดทันที
+                    const col = Number(icon.dataset.col);
+                    openColumnFilter(col);
+                });
+            });
+
+        });
+
+
+
+        /* -----------------------------------------------------
+           FILTER
+        ----------------------------------------------------- */
+        function openColumnFilter(colIndex) {
+            // ถ้าคลิกคอลัมน์เดิม → ปิด
+            if (openFilterColumn === colIndex) {
+                closeColumnFilterModal();
+                return;
+            }
+
+            openFilterColumn = colIndex;
+
+            // ✅ ล้างค่า search ทุกครั้งที่เปิดคอลัมน์ใหม่
+            const searchInput = document.getElementById("column-filter-search");
+            if (searchInput) {
+                searchInput.value = "";
+            }
+
+            loadFilterValues(colIndex);
+            updateFilterIcon(colIndex);
+
+            showFilterModal(
+                document.querySelector(`.filter-icon[data-col="${colIndex}"]`)
+            );
+        }
+
+
+
+
+
+        function showFilterModal(icon) {
+            const modal = document.getElementById("column-filter-modal");
+            const box = document.getElementById("column-filter-content");
+
+            modal.classList.remove("hidden");
+
+            const rect = icon.getBoundingClientRect();
+            const boxWidth = 300; // ความกว้าง filter popup ของคุณ
+            const screenWidth = window.innerWidth;
+
+            let left = rect.left;
+
+            // ถ้าจะล้นจอ → ขยับไปทางซ้าย
+            if (left + boxWidth > screenWidth - 10) {
+                left = screenWidth - boxWidth - 10;
+            }
+
+            box.style.left = `${left}px`;
+            box.style.top = `${rect.bottom + window.scrollY}px`;
+        }
+
+
+        function loadFilterValues(colIndex) {
+            const list = document.getElementById("column-filter-checkbox-list");
+            list.innerHTML = "";
+
+            // 👉 ถ้ามี filter อื่น → ใช้ visibleRows
+            const sourceRows =
+                Object.keys(filters).length === 0 ?
+                allRows :
+                visibleRows;
+
+            const values = [...new Set(
+                    sourceRows.map(row => getCellValue(row, colIndex))
+                )]
+                .filter(v => v !== "")
+                .sort((a, b) => a.localeCompare(b, undefined, {
+                    numeric: true
+                }));
+
+            const selected = filters[colIndex] ?? [];
+
+            values.forEach(v => {
+                const checked = selected.includes(v) ? "checked" : "";
+
+                list.innerHTML += `
+            <label class="filter-item flex items-center space-x-2 py-1 px-2 rounded cursor-pointer hover:bg-red-100">
+                <input type="checkbox" class="filter-checkbox" value="${v}" ${checked}>
+                <span>${v}</span>
+            </label>
+        `;
+            });
+        }
+
+
+        function getCellValue(row, colIndex) {
+            const cell = row.children[colIndex];
+            if (!cell) return "";
+
+            // กรณี cell มี input (ของคุณเป็นแบบนี้เกือบทั้งหมด)
+            const input = cell.querySelector("input");
+            if (input) {
+                return input.value.trim();
+            }
+
+            // fallback
+            return cell.innerText.trim();
+        }
+
+
+
+        function handleSearch(text) {
+            const list = document.getElementById("column-filter-checkbox-list");
+            const keyword = text.toLowerCase().trim();
+
+            const items = list.querySelectorAll("label");
+
+            items.forEach(label => {
+                const checkbox = label.querySelector("input");
+                const value = label.querySelector("span").innerText.toLowerCase();
+
+                if (keyword === "") {
+                    // ❌ ไม่พิมพ์อะไร → แสดงทั้งหมด แต่ไม่ติ๊ก
+                    label.style.display = "";
+                    checkbox.checked = false;
+                } else if (value.includes(keyword)) {
+                    // ✅ match → แสดง + ติ๊ก
+                    label.style.display = "";
+                    checkbox.checked = true;
+                } else {
+                    // ❌ ไม่ match → ซ่อน + ไม่ติ๊ก
+                    label.style.display = "none";
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+
+
+
+        function selectAll() {
+            document.querySelectorAll("#column-filter-checkbox-list .filter-checkbox")
+                .forEach(cb => cb.checked = true);
+        }
+
+        function deselectAll() {
+            document.querySelectorAll("#column-filter-checkbox-list .filter-checkbox")
+                .forEach(cb => cb.checked = false);
+        }
+
+        function sortAZ() {
+            if (openFilterColumn === null) return;
+            sortTable(openFilterColumn, 'asc');
+        }
+
+        function sortZA() {
+            if (openFilterColumn === null) return;
+            sortTable(openFilterColumn, 'desc');
+        }
+
+
+
+
+
+        function applyColumnFilter() {
+            const col = openFilterColumn;
+
+            const checkboxes = document.querySelectorAll(".filter-checkbox");
+            const selected = [...checkboxes]
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const total = checkboxes.length;
+
+            // Excel rule
+            if (selected.length === 0 || selected.length === total) {
+                delete filters[col];
+            } else {
+                filters[col] = selected;
+            }
+
+            applyAllFilters();
+
+            // ✅ update icon
+            updateFilterIcon(col);
+
+            closeColumnFilterModal(false);
+        }
+
+
+
+        function applyAllFilters() {
+            visibleRows = allRows.filter(row => {
+                for (let colKey in filters) {
+                    const allowed = filters[colKey];
+                    const colIndex = Number(colKey);
+
+                    const value = getCellValue(row, colIndex);
+                    if (!allowed.includes(value)) return false;
+                }
+                return true;
+            });
+
+            totalRows = visibleRows.length;
+
+            currentPage = 1;
+            renderPagination();
+        }
+
+
+
+
+        function closeColumnFilterModal() {
+            document.getElementById("column-filter-modal").classList.add("hidden");
+            openFilterColumn = null;
+        }
+
+
+
+        /* ปิด modal เมื่อคลิกข้างนอก */
+        document.addEventListener("mousedown", e => {
+            const modal = document.getElementById("column-filter-modal");
+            if (modal.classList.contains("hidden")) return;
+
+            const box = document.getElementById("column-filter-content");
+            if (!box.contains(e.target)) closeColumnFilterModal();
+        });
+
+        /* -----------------------------------------------------
+           PAGINATION (ทำงานร่วมกับ Filter)
+        ----------------------------------------------------- */
+        function setupRowsPerPageOptions() {
+            const select = document.getElementById("rowsPerPageList");
+            if (!select) return;
+            select.innerHTML = "";
+
+            const presets = [10, 20, 50, 100];
+
+            presets.forEach(n => {
+                if (n < allRows.length) {
+                    let opt = document.createElement("option");
+                    opt.value = n;
+                    opt.textContent = `${n} แถว`;
+                    select.appendChild(opt);
+                }
+            });
+
+            let allOpt = document.createElement("option");
+            allOpt.value = allRows.length;
+            allOpt.textContent = `ทั้งหมด (${allRows.length} แถว)`;
+            select.appendChild(allOpt);
+
+            // ✅ บังคับ default = 10 เสมอถ้ามี
+            if (select.querySelector('option[value="10"]')) {
+                select.value = "10";
+                rowsPerPage = 10;
+            }
+        }
+
+        function renderPageNumbers(totalPages) {
+            const container = document.getElementById("pageNumbersList");
+            container.innerHTML = "";
+
+            const maxButtons = 5;
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, start + maxButtons - 1);
+
+            if (end - start < maxButtons - 1) {
+                start = Math.max(1, end - maxButtons + 1);
+            }
+
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i;
+
+                btn.className =
+                    i === currentPage ?
+                    "w-10 h-10 rounded-xl bg-indigo-600 text-white font-sarabun text-sm shadow-md" :
+                    "w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all";
+
+                btn.onclick = () => goToPage(i);
+                container.appendChild(btn);
+            }
+        }
+
+
+
+
+        function renderPagination() {
+            const tbody = document.querySelector("#tableBody");
+
+            visibleRows.forEach(tr => tbody.appendChild(tr));
+
+            const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            allRows.forEach(r => r.style.display = "none");
+
+            if (totalRows === 0) {
+                document.getElementById("paginationSummaryList").innerText =
+                    `แสดง 0-0 จากทั้งหมด 0 รายการ`;
+                renderPageNumbers(1);
+                return;
+            }
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            visibleRows.slice(start, end).forEach(r => r.style.display = "");
+
+            document.getElementById("paginationSummaryList").innerText =
+                `แสดง ${start + 1}-${Math.min(end, totalRows)} จากทั้งหมด ${totalRows} รายการ`;
+
+            document.getElementById("prevPageBtnList").disabled = currentPage === 1;
+            document.getElementById("nextPageBtnList").disabled = currentPage >= totalPages;
+
+
+            renderPageNumbers(totalPages);
+        }
+
+
+
+        function goToPage(page) {
+            const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+            if (page < 1 || page > totalPages) return;
+
+            currentPage = page;
+            renderPagination();
+        }
+
+
+        function changeRowsPerPage(v) {
+            rowsPerPage = parseInt(v);
+            currentPage = 1;
+            renderPagination();
+        }
+    </script>
+
+
+    <!-- ฟังชั่น Sort A -> Z Sort Z -> A -->
+    <script>
+        let sortState = {
+            col: null,
+            direction: null // 'asc' | 'desc'
+        };
+
+        function sortTable(colIndex, direction) {
+            if (colIndex == null) return;
+
+            sortState.col = colIndex;
+            sortState.direction = direction;
+
+            visibleRows.sort((a, b) => {
+                let v1 = getCellValue(a, colIndex);
+                let v2 = getCellValue(b, colIndex);
+
+                const n1 = parseFloat(v1.replace(/,/g, ""));
+                const n2 = parseFloat(v2.replace(/,/g, ""));
+
+                if (!isNaN(n1) && !isNaN(n2)) {
+                    return direction === 'asc' ? n1 - n2 : n2 - n1;
+                }
+
+                return direction === 'asc' ?
+                    v1.localeCompare(v2, undefined, {
+                        numeric: true
+                    }) :
+                    v2.localeCompare(v1, undefined, {
+                        numeric: true
+                    });
+            });
+
+            currentPage = 1;
+            renderPagination();
+            updateAllColumnIcons();
+        }
+
+
+        function handleSearchEnter(e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // กัน form submit (ถ้ามี)
+                applyColumnFilter(); // = กด OK
+            }
+        }
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                closeColumnFilterModal();
+            }
+        });
+
+
+
+        function clearColumnFilterExcel() {
+            if (openFilterColumn === null) return;
+
+            const col = openFilterColumn;
+
+            // 1. ลบ filter ของคอลัมน์นี้
+            delete filters[col];
+
+            // 2. apply filter ใหม่ (ยังเหลือ filter คอลัมน์อื่น)
+            applyAllFilters();
+
+            // 3. reload checkbox จากข้อมูลในตารางปัจจุบัน
+            loadFilterValues(col);
+
+            // 4. update icon
+            updateFilterIcon(col);
+        }
+
+
+
+        function updateFilterIcon(colIndex) {
+            const iconWrap = document.querySelector(`.filter-icon[data-col="${colIndex}"]`);
+            if (!iconWrap) return;
+
+            const isFiltered = filters[colIndex] && filters[colIndex].length > 0;
+
+            iconWrap.innerHTML = isFiltered ?
+                ICONS.filter :
+                ICONS.normal;
+        }
+
+        function updateAllColumnIcons() {
+            document.querySelectorAll(".filter-icon").forEach(icon => {
+                const col = Number(icon.dataset.col);
+
+                // 1. sort มาก่อน
+                if (sortState.col === col) {
+                    icon.innerHTML =
+                        sortState.direction === "asc" ?
+                        ICONS.sortAsc :
+                        ICONS.sortDesc;
+                    return;
+                }
+
+                // 2. filter รองลงมา
+                if (filters[col]) {
+                    icon.innerHTML = ICONS.filter;
+                    return;
+                }
+
+                // 3. ปกติ
+                icon.innerHTML = ICONS.normal;
+            });
+        }
+
+        function clearAllTableFilters() {
+
+            // 1. ล้าง filter ทุกคอลัมน์
+            filters = {};
+
+            // 2. ล้าง sort state
+            sortState.col = null;
+            sortState.direction = null;
+
+            // 3. คืน visibleRows เป็นลำดับต้นฉบับ
+            visibleRows = allRows.slice();
+
+            totalRows = visibleRows.length;
+
+            // 4. reset pagination
+            currentPage = 1;
+            renderPagination();
+
+            // 5. update icon ทุกคอลัมน์
+            updateAllColumnIcons();
+
+            // 6. ปิด modal
+            closeColumnFilterModal();
+        }
+    </script>
 
 
 

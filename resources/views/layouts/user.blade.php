@@ -59,6 +59,46 @@
                 </a>
 
 
+
+
+                <div x-data="{ open: false }" class="flex flex-col">
+                    <!-- ปุ่ม IT Support -->
+                    <button type="button" @click="open = !open"
+                        class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
+               hover:bg-white hover:text-blue-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <span class="text-base font-sarabun ">New Job Assignment</span>
+                        </div>
+                        <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-white"></i>
+                    </button>
+
+                    <!-- เมนูย่อย -->
+                    <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
+                        class="flex flex-col pl-8 mt-2 space-y-1">
+
+                        @php
+                            $isAuthorized = Auth::check() && Auth::user()->status == 'Admin';
+                        @endphp
+
+                        <!-- Add Member -->
+                        <a href="{{ $isAuthorized ? route('user.sda.home') : route('addjob.user') }}"
+                            class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'newjobassignment.addjob' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+                            Add Job
+                        </a>
+
+
+                        <!-- PO
+                        <a href="PO/purchase"
+                            class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'newjobassignment.addjob' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+                            PO
+                        </a>
+ -->
+
+                    </div>
+                </div>
+
+
                 <!-- PR Dropdown -->
                 <div x-data="{ open: false }" class="flex flex-col">
                     <!-- ปุ่ม PR -->
@@ -90,32 +130,38 @@
                     </div>
                 </div>
 
+                @php
+                    $isAuthorized = Auth::check() && Auth::user()->status == 'Admin';
+                @endphp
 
-                <!-- ERP -->
-                <div x-data="{ open: false }" class="flex flex-col">
-                    <!-- ปุ่ม PR -->
-                    <button type="button" @click="open = !open"
-                        class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
+                @if ($isAuthorized)
+                    <!-- ERP -->
+                    <div x-data="{ open: false }" class="flex flex-col">
+
+                        <!-- ปุ่ม PR -->
+                        <button type="button" @click="open = !open"
+                            class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
                hover:bg-white hover:text-blue-800">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-building"></i>
-                            <span class="text-base font-sarabun ">ERP</span>
-                        </div>
-                        <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-white"></i>
-                    </button>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-building"></i>
+                                <span class="text-base font-sarabun ">ERP</span>
+                            </div>
+                            <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
+                                class="text-white"></i>
+                        </button>
 
-                    <!-- เมนูย่อย -->
-                    <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
-                        class="flex flex-col pl-8 mt-2 space-y-1">
+                        <!-- เมนูย่อย -->
+                        <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
+                            class="flex flex-col pl-8 mt-2 space-y-1">
 
-                        <!-- Refcode -->
-                        @if (Auth::check())
-                            <a href="refcode/home"
-                                class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'pr.home' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                                Refcode
-                            </a>
+                            <!-- Refcode -->
+                            @if (Auth::check())
+                                <a href="refcode/home"
+                                    class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'pr.home' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+                                    Refcode
+                                </a>
 
-                            <!-- Billing
+                                <!-- Billing
                         <a href="billing/home"
                             class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
                             Billing
@@ -128,11 +174,12 @@
 
                         </a>
 -->
-                        @endif
+                            @endif
+                        </div>
+
                     </div>
-                </div>
 
-
+                @endif
                 <div x-data="{ open: false }" class="flex flex-col">
                     <!-- ปุ่ม IT Support -->
                     <button type="button" @click="open = !open"
@@ -167,34 +214,37 @@
                         @endphp
 
                         <a href="{{ $isAuthorized ? 'https://onedrive.live.com/:x:/g/personal/83EA148C542F6F94/EZRvL1SMFOoggIOW3wAAAAABlgZcLYR_-c6XGPd8omyOUA?resid=83EA148C542F6F94!57238&ithint=file%2Cxlsx&e=4%3Af683edb2bd394b05a4823a9a2d7762b8&sharingv2=true&fromShare=true&at=9&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3gvYy84M0VBMTQ4QzU0MkY2Rjk0L0VaUnZMMVNNRk9vZ2dJT1czd0FBQUFBQmxnWmNMWVJfLWM2WEdQZDhvbXlPVUE_ZT00OmY2ODNlZGIyYmQzOTRiMDVhNDgyM2E5YTJkNzc2MmI4JnNoYXJpbmd2Mj10cnVlJmZyb21TaGFyZT10cnVlJmF0PTk' : '#' }}"
-                            target="blank" class="px-3 py-1 rounded-md transition font-sarabun {{ $isAuthorized ? 'target=_blank' : 'onclick=event.preventDefault();' }} {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
+                            target="blank"
+                            class="px-3 py-1 rounded-md transition font-sarabun {{ $isAuthorized ? 'target=_blank' : 'onclick=event.preventDefault();' }} {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
                             Databases
                         </a>
                     </div>
                 </div>
 
 
-                <div x-data="{ open: false }" class="flex flex-col">
-                    <!-- ปุ่ม IT Support -->
-                    <button type="button" @click="open = !open"
-                        class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
+                @php
+                    $isAuthorized = Auth::check() && Auth::user()->status == 'Admin';
+                @endphp
+
+                @if ($isAuthorized)
+                    <div x-data="{ open: false }" class="flex flex-col">
+                        <!-- ปุ่ม IT Support -->
+                        <button type="button" @click="open = !open"
+                            class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
                hover:bg-white hover:text-blue-800">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-regular fa-user"></i>
-                            <span class="text-base font-sarabun">Admin</span>
-                        </div>
-                        <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-white"></i>
-                    </button>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-user"></i>
+                                <span class="text-base font-sarabun">Admin</span>
+                            </div>
+                            <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
+                                class="text-white"></i>
+                        </button>
 
-                    <!-- เมนูย่อย -->
-                    <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
-                        class="flex flex-col pl-8 mt-2 space-y-1">
+                        <!-- เมนูย่อย -->
+                        <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
+                            class="flex flex-col pl-8 mt-2 space-y-1">
 
-                        @php
-                            $isAuthorized = Auth::check() && Auth::user()->status == 'Admin';
-                        @endphp
 
-                        @if ($isAuthorized)
                             <!-- Add Member -->
                             <a href="{{ route('sda.register') }}"
                                 class="px-3 py-1 rounded-md transition font-sarabun
@@ -203,73 +253,42 @@
            : 'text-blue hover:bg-white hover:text-blue-800' }}">
                                 Add Member
                             </a>
-                        @endif
 
 
-                        <!-- Member Total
+
+                            <!-- Member Total
                         <a href="#"
                             class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'pr.purchase' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
                             Member Total
                         </a>
  -->
-                    </div>
-                </div>
-
-
-                <div x-data="{ open: false }" class="flex flex-col">
-                    <!-- ปุ่ม IT Support -->
-                    <button type="button" @click="open = !open"
-                        class="flex items-center justify-between gap-2 px-3 py-2 rounded-md transition w-full
-               hover:bg-white hover:text-blue-800">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-briefcase"></i>
-                            <span class="text-base font-sarabun ">New Job Assignment</span>
                         </div>
-                        <i :class="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-white"></i>
-                    </button>
-
-                    <!-- เมนูย่อย -->
-                    <div x-show="open || window.location.pathname.startsWith('/pr')" x-transition
-                        class="flex flex-col pl-8 mt-2 space-y-1">
-
-                        @php
-                            $isAuthorized = Auth::check() && Auth::user()->status == 'Admin';
-                        @endphp
-
-                        <!-- Add Member -->
-                        <a href="{{ $isAuthorized ? route('user.sda.home') : route('addjob.user') }}" target="_blank"
-                            class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'newjobassignment.addjob' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                            Add Job
-                        </a>
-
-
-                        <!-- PO -->
-                        <a href="PO/purchase"
-                            class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'newjobassignment.addjob' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
-                            PO
-                        </a>
-
-
                     </div>
-                </div>
+                @endif
+
 
             </div>
 
             <!-- ปุ่มออกจากระบบ -->
-            <div class="mt-auto px-2 pb-4 mt-2">
-                <a href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="flex items-center justify-center gap-2 w-full 
-               bg-red-600 text-white font-sarabun py-2 rounded-lg shadow-md
-               transition transform hover:bg-red-700 hover:scale-[1.02]">
-                    <i class="fas fa-sign-out-alt"></i>
-                    ออกจากระบบ
-                </a>
+            {{-- แสดงปุ่มออกจากระบบ เฉพาะหน้าอื่นที่ไม่ใช่ user/sda/register --}}
+            @if (!Route::is('sda.register'))
+                <!-- ปุ่มออกจากระบบ -->
+                <div class="mt-auto px-2 pb-4 mt-2">
+                    <a href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="flex items-center justify-center gap-2 w-full 
+                   bg-red-600 text-white font-sarabun py-2 rounded-lg shadow-md
+                   transition transform hover:bg-red-700 hover:scale-[1.02]">
+                        <i class="fas fa-sign-out-alt"></i>
+                        ออกจากระบบ
+                    </a>
 
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                    @csrf
-                </form>
-            </div>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                </div>
+            @endif
+
 
         </aside>
 

@@ -54,7 +54,7 @@
 
     @if (Auth::check())
 
-        @if (in_array(Auth::user()->status, [4]))
+        @if (in_array(Auth::user()->status, ['Admin']))
             <div class="d-flex justify-content-end me-3 ms-3">
                 <!-- import Refcode -->
 

@@ -2,7 +2,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,44 +20,56 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-    */
-    
+     */
+
     public function boot(): void
     {
-        View::composer('layouts.Tailwind', function ($view) {
+        View::composer('*', function ($view) {
 
-            // Pending
-            $pendingJobs = DB::table('collab_newjob')
-                ->where('Job_Adding_Status', 'Pending')
-                ->get();
-
-            // Notifications
-            if (Auth::check()) {
-                $requester = Auth::user()->name;
-
-                $countNotifications = DB::table('collab_newjob')
-                    ->where('Requester', $requester)
-                    ->where('is_read', 0)
-                    ->whereIn('Job_Adding_Status', ['Approved', 'Rejected'])
-                    ->count();
-
-                $notifications = DB::table('collab_newjob')
-                    ->where('Requester', $requester)
-                    ->whereIn('Job_Adding_Status', ['Approved', 'Rejected'])
-                    ->orderBy('is_read', 'asc')
-                    ->orderBy('id', 'desc')
-                    ->get();
-            } else {
-                $countNotifications = 0;
-                $notifications      = collect([]);
+            if (! Auth::check()) {
+                return;
             }
 
-            $view->with([
-                'pendingJobs'        => $pendingJobs,
-                'countPending'       => $pendingJobs->count(),
-                'notifications'      => $notifications,
-                'countNotifications' => $countNotifications,
-            ]);
+            $user = Auth::user();
+
+            // ================= ADMIN =================
+            if ($user->status === 'Admin') {
+
+                // 🔵 งานที่ต้องพิจารณา
+                $unreadNotifications = DB::table('collab_newjob')
+                    ->where('is_read', 0)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                // 🟢 ประวัติที่จัดการแล้ว
+                $readNotifications = DB::table('collab_newjob')
+                    ->where('is_read', 1)
+                    ->orderBy('updated_at', 'desc')
+                    ->limit(20)
+                    ->get();
+            }
+
+            // ================= USER =================
+            else {
+
+                // 🔔 ผลการอนุมัติใหม่
+                $unreadNotifications = DB::table('collab_newjob')
+                    ->where('Requester', $user->name)
+                    ->where('is_read', 0)
+                    ->whereIn('Job_Adding_Status', ['Approved', 'Rejected'])
+                    ->orderBy('updated_at', 'desc')
+                    ->get();
+
+                // 🟢 ผลการอนุมัติที่ผ่านมา
+                $readNotifications = DB::table('collab_newjob')
+                    ->where('Requester', $user->name)
+                    ->where('is_read', 1)
+                    ->orderBy('updated_at', 'desc')
+                    ->limit(20)
+                    ->get();
+            }
+
+            $view->with(compact('unreadNotifications', 'readNotifications'));
         });
 
         View::composer('layouts.user', function ($view) {

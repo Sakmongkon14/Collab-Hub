@@ -34,9 +34,17 @@ Route::get('user/home', [UserAddJobcontroller::class, 'home'])->name('user.home'
 
 // Add job User
 Route::get('user/addjob/home', [UserAddJobcontroller::class, 'index'])->name('addjob.user');
+Route::post('user/addjob/savenewjob', [UserAddJobcontroller::class, 'savenewjob'])->name('addjob.savenewjob');
+        // import new job
+Route::post('user/addjob/home/import', [UserAddJobcontroller::class, 'importnewjob'])->name('addjob.importnewjob');
+        // save import new job
+Route::post('user/addjob/home/saveaddjob', [UserAddJobcontroller::class, 'saveimportnewjob'])->name('addjob.saveimportnewjob');
+
+
 // Add job SDA
 Route::get('user/sda/home', [UserAddJobcontroller::class, 'sda'])->name('user.sda.home');
-Route::get('/notification/read/{id}', [UserAddJobController::class, 'markAsRead'])->name('notification.read');
+Route::get('/notification/read/{id}', [UserAddJobcontroller::class, 'markAsRead'])->name('notification.read');
+Route::put('/job/status/{id}', [UserAddJobcontroller::class, 'updateStatus'])->name('update.job.status');
 
 // Admin register
 Route::get('user/sda/register', [RegisterController::class, 'showRegistrationForm'])->name('sda.register');
@@ -44,13 +52,12 @@ Route::post('user/sda/register', [RegisterController::class, 'register'])->name(
 
 // Project Databases
 Route::get('user/project/projectview', [UserProjectDatabasescontroller::class, 'project16'])->name('project.projectview');
-
 Route::post('user/permissions/save/{project_code}', [UserProjectDatabasescontroller::class, 'save'])->name('permissions.save');
 
 // Inline update for collab_newjob
 Route::post('user/newjob/inline-update', [UserProjectDatabasescontroller::class, 'inlineUpdate'])->name('newjob.inlineUpdate');
 
-
+//END Collab HUB
 
 
 
@@ -62,14 +69,29 @@ Route::post('user/newjob/inline-update', [UserProjectDatabasescontroller::class,
 Route::get('projectdatabases/98true/home', [Truecontroller::class, 'index'])->name('98true.home');
 
 // New Job Assignment
-Route::get('newjobassignment/addjob', [AddJobcontroller::class, 'index'])->name('addjob.index');
-Route::post('newjobassignment/savenewjob', [AddJobcontroller::class, 'savenewjob'])->name('addjob.savenewjob');
-Route::post('newjobassignment/addjob', [AddJobcontroller::class, 'importnewjob'])->name('addjob.importnewjob');
-Route::post('newjobassignment/saveaddjob', [AddJobcontroller::class, 'saveimportnewjob'])->name('addjob.saveimportnewjob');
-Route::put('/job/status/{id}', [AddJobcontroller::class, 'updateStatus'])->name('update.job.status');
+        //Route::get('newjobassignment/addjob', [AddJobcontroller::class, 'index'])->name('addjob.index');
+        //Route::post('newjobassignment/savenewjob', [AddJobcontroller::class, 'savenewjob'])->name('addjob.savenewjob');
+        //Route::post('newjobassignment/addjob', [AddJobcontroller::class, 'importnewjob'])->name('addjob.importnewjob');
+        //Route::post('newjobassignment/saveaddjob', [AddJobcontroller::class, 'saveimportnewjob'])->name('addjob.saveimportnewjob');
+        //Route::put('/job/status/{id}', [AddJobcontroller::class, 'updateStatus'])->name('update.job.status');
 
 // SDA
-Route::get('newjobassignment/sda/home', [AddJobcontroller::class, 'sda'])->name('sda.home');
+        //Route::get('newjobassignment/sda/home', [AddJobcontroller::class, 'sda'])->name('sda.home');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Implement
 Route::get('/implement/home', [Implementcontroller::class, 'index'])->name('implement.home');
