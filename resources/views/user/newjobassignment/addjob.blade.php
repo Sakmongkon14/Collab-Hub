@@ -224,17 +224,17 @@
                                                 <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
                                                     {{ $data['Customer_Region'] ?? '-' }}</td>
 
-                                                <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
+                                                <td class="px-2 py-1 border text-end whitespace-nowrap text-[14px]">
                                                     {{ isset($data['Estimated_Revenue']) ? number_format($data['Estimated_Revenue'], 2) : '-' }}
                                                 </td>
-                                                <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
+                                                <td class="px-2 py-1 border text-end whitespace-nowrap text-[14px]">
                                                     {{ isset($data['Estimated_Service_Cost']) ? number_format($data['Estimated_Service_Cost'], 2) : '-' }}
                                                 </td>
-                                                <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
+                                                <td class="px-2 py-1 border text-end whitespace-nowrap text-[14px]">
                                                     {{ isset($data['Estimated_Material_Cost']) ? number_format($data['Estimated_Material_Cost'], 2) : '-' }}
                                                 </td>
 
-                                                <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
+                                                <td class="px-2 py-1 border text-end whitespace-nowrap text-[14px]">
                                                     {{ isset($data['Estimated_Gross_Profit']) ? number_format($data['Estimated_Gross_Profit'], 2) : '-' }}
                                                 </td>
                                                 <td class="px-2 py-1 border text-center whitespace-nowrap text-[14px]">
@@ -531,7 +531,7 @@
                 </div>
 
 
-                <div class="relative overflow-x-auto mt-2 overflow-y-auto h-[350px] font-sarabun">
+                <div class="relative overflow-x-auto mt-2 overflow-y-auto h-[370px] font-sarabun">
                     <table
                         class="min-w-max table-fixed border-separate border-spacing-0
                                 [--th-h:20px]
@@ -847,7 +847,6 @@
                                     </td>
 
 
-
                                     <td
                                         class="py-1 px-3 border-b whitespace-nowrap text-left sticky left-[calc(var(--col-1)+var(--col-2)+var(--col-3))] z-[55] bg-white group-hover:bg-red-100 transition">
                                         {{ $item->Site_Code }}
@@ -871,25 +870,29 @@
                                     </td>
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-left">
                                         {{ $item->Customer_Region }}</td>
+                                        
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{  $item->Estimated_Revenue }}
+                                        {{ $item->Estimated_Revenue }}
+                                        
                                     </td>
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{  $item->Estimated_Service_Cost }}
+                                        {{ $item->Estimated_Service_Cost }}
+                                        
                                     </td>
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
                                         {{  $item->Estimated_Material_Cost }}
+                                        
                                     </td>
 
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{ number_format((float) $item->Estimated_Gross_Profit, 2) }}
+                                        {{ $item->Estimated_Gross_Profit }}
                                     </td>
 
-                                    <td class="py-1 px-3 border-b whitespace-nowrap text-center">
+                                    <td class="py-1 px-3 border-b whitespace-nowrap text-right">
                                         {{ number_format((float) $item->Estimated_Gross_ProfitMargin, 2) }}%
                                     </td>
 
@@ -997,13 +1000,17 @@
             const revenueInput = document.getElementById('estimated_revenue');
             const serviceCostInput = document.getElementById('estimated_service_cost');
             const materialCostInput = document.getElementById('estimated_material_cost');
+            
             const grossProfitInput = document.getElementById('estimated_gross_profit');
             const grossProfitMarginInput = document.getElementById('estimated_gross_profit_margin');
+
             const addForm = addModal.querySelector('form');
 
             const modalInputs = [revenueInput, serviceCostInput, materialCostInput, grossProfitInput,
                 grossProfitMarginInput
             ];
+            
+            
 
             function calculateGross() {
                 const revenue = parseFloat(revenueInput.value.replace(/,/g, '')) || 0;

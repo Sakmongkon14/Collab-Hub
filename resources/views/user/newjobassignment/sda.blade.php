@@ -447,23 +447,24 @@
                                     <td class="py-1 px-1 border-b whitespace-nowrap text-left">
                                         {{ $item->Customer_Region }}</td>
 
-                                        <td class="py-1 px-3 border-b whitespace-nowrap text-right">
+                                    <td class="py-1 px-3 border-b whitespace-nowrap text-right">
                                         {{  $item->Estimated_Revenue }}
                                     </td>
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{  $item->Estimated_Service_Cost }}
+
+                                        {{$item->Estimated_Service_Cost}}
                                     </td>
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{ number_format((float) $item->Estimated_Material_Cost, 2) }}
+                                        {{$item->Estimated_Material_Cost}}
                                     </td>
 
                                     <td class="py-1 px-3 border-b whitespace-nowrap text-right">
-                                        {{ number_format((float) $item->Estimated_Gross_Profit, 2) }}
+                                        {{$item->Estimated_Gross_Profit}}
                                     </td>
 
-                                    <td class="py-1 px-3 border-b whitespace-nowrap text-center">
+                                    <td class="py-1 px-3 border-b whitespace-nowrap text-right">
                                         {{ number_format((float) $item->Estimated_Gross_ProfitMargin, 2) }}%
                                     </td>
 

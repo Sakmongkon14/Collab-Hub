@@ -59,13 +59,19 @@ class UserProjectDatabasescontroller extends Controller
                                             // 2️⃣ ดึงข้อมูลจาก project16 มาแสดงตาม status ของ user
         $userStatus = Auth::user()->status; // เช่น "01_BKK" หรือ "admin"
 
+        $projectRole = DB::table('collab_user_permissions')
+            ->where('user_id', Auth::id())
+            ->value('project_role');
+
         $projectData = DB::table('collab_table_project16')
-            ->when($userStatus !== 'Admin', function ($query) use ($userStatus) {
-                // ถ้าไม่ใช่ admin ให้กรองตาม Office_Code_PJ
-                return $query->where('Office_Code_PJ', $userStatus);
+            ->when(! in_array($projectRole, ['Admin', 'Project Manager']), function ($query) use ($userStatus) {
+                // ถ้าไม่ใช่ Admin และไม่ใช่ Project Manager
+                $query->where('Office_Code_PJ', $userStatus);
             })
             ->orderBy('Refcode_PJ')
             ->get();
+
+        //dd($projectData);
 
         // 3️⃣ user ที่ใช้จัด permission
         $users = DB::table('users')
@@ -132,7 +138,8 @@ class UserProjectDatabasescontroller extends Controller
         return back()->with('success', 'Permissions saved successfully!');
     }
 
-    public function inlineUpdate(Request $request)
+    
+    public function inlineUpdate_old(Request $request)
     {
         $request->validate([
             'id'    => 'required|string', // Refcode_PJ
@@ -260,6 +267,152 @@ class UserProjectDatabasescontroller extends Controller
 
             DB::commit();
             return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function inlineUpdate(Request $request)
+    {
+        $request->validate([
+            'id'    => 'required|string', // Refcode_PJ
+            'field' => 'required|string',
+            'value' => 'nullable|string',
+        ]);
+
+        /* ===============================
+       1) allow fields
+       =============================== */
+        $allowedCols = [];
+        for ($i = 1; $i <= 50; $i++) {
+            $allowedCols[] = 'col' . $i;
+        }
+
+        $moneyFields = [
+            'Estimated_Revenue_PJ',
+            'Estimated_Service_Cost_PJ',
+            'Estimated_Material_Cost_PJ',
+        ];
+
+        $projectFields = array_merge([
+            'Customer_Region_PJ',
+        ], $moneyFields);
+
+        if (! in_array($request->field, array_merge($allowedCols, $projectFields))) {
+            return response()->json(['success' => false], 403);
+        }
+
+        /* ===============================
+       2) permission
+       =============================== */
+        $permission = DB::table('collab_user_permissions')
+            ->where('user_id', Auth::id())
+            ->where('project_code', '16')
+            ->first();
+
+        if (! $permission || $permission->member_status !== 'yes') {
+            return response()->json(['success' => false], 403);
+        }
+
+        if (
+            ! isset($permission->{$request->field}) ||
+            $permission->{$request->field} !== 'write'
+        ) {
+            return response()->json(['success' => false], 403);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            /* ===============================
+           3) prepare value
+           =============================== */
+            $rawValue   = trim((string) $request->value);
+            $storeValue = $rawValue;
+
+            // ถ้าเป็น field เงิน → format ให้มี comma + 2 decimals
+            if (in_array($request->field, $moneyFields)) {
+                $numeric    = (float) str_replace(',', '', $rawValue);
+                $storeValue = number_format($numeric, 2, '.', ',');
+            }
+
+            /* ===============================
+           4) update collab_table_project16
+           =============================== */
+            DB::table('collab_table_project16')
+                ->where('Refcode_PJ', $request->id)
+                ->update([
+                    $request->field => $storeValue,
+                ]);
+
+            /* ===============================
+           5) sync basic fields → collab_newjob
+           =============================== */
+            $syncMap = [
+                'Customer_Region_PJ'         => 'Customer_Region',
+                'Estimated_Revenue_PJ'       => 'Estimated_Revenue',
+                'Estimated_Service_Cost_PJ'  => 'Estimated_Service_Cost',
+                'Estimated_Material_Cost_PJ' => 'Estimated_Material_Cost',
+            ];
+
+            if (isset($syncMap[$request->field])) {
+                DB::table('collab_newjob')
+                    ->where('Refcode', $request->id)
+                    ->update([
+                        $syncMap[$request->field] => $storeValue,
+                    ]);
+            }
+
+            /* ===============================
+           6) calculate gross (money only)
+           =============================== */
+            if (in_array($request->field, $moneyFields)) {
+
+                $row = DB::table('collab_table_project16')
+                    ->where('Refcode_PJ', $request->id)
+                    ->first();
+
+                $revenue  = (float) str_replace(',', '', $row->Estimated_Revenue_PJ ?? 0);
+                $service  = (float) str_replace(',', '', $row->Estimated_Service_Cost_PJ ?? 0);
+                $material = (float) str_replace(',', '', $row->Estimated_Material_Cost_PJ ?? 0);
+
+                $grossProfit = $revenue - $service - $material;
+                $grossMargin = $revenue > 0
+                    ? ($grossProfit / $revenue) * 100
+                    : 0;
+
+                $grossProfitFormatted = number_format($grossProfit, 2, '.', ',');
+                $grossMarginFormatted = number_format($grossMargin, 2, '.', ',');
+
+                // update project table
+                DB::table('collab_table_project16')
+                    ->where('Refcode_PJ', $request->id)
+                    ->update([
+                        'Estimated_Gross_Profit_PJ'       => $grossProfitFormatted,
+                        'Estimated_Gross_ProfitMargin_PJ' => $grossMarginFormatted,
+                    ]);
+
+                // sync → collab_newjob
+                DB::table('collab_newjob')
+                    ->where('Refcode', $request->id)
+                    ->update([
+                        'Estimated_Gross_Profit'       => $grossProfitFormatted,
+                        'Estimated_Gross_ProfitMargin' => $grossMarginFormatted,
+                    ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'value'   => $storeValue,
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -3,35 +3,35 @@
 @section('title', 'Project Databases - Project View')
 
 @section('content')
-    <!-- Export To Excel -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- Export To Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- sweetalert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
-    <!-- Load Font Awesome for Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/all/all.css">
+<!-- Load Font Awesome for Icons -->
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- แสดงข้อความ error -->
-    @if (session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
-            {{ session('error') }}
-        </div>
-    @endif
+<!-- แสดงข้อความ error -->
+@if (session('error'))
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+    {{ session('error') }}
+</div>
+@endif
 
-    <!-- แสดงข้อความสำเร็จ -->
-    @if (session('success'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
+<!-- แสดงข้อความสำเร็จ -->
+@if (session('success'))
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
                     icon: 'success',
                     title: 'สำเร็จ!',
@@ -44,104 +44,104 @@
                     }
                 });
             });
-        </script>
-    @endif
+</script>
+@endif
 
-    <!--แปลงเป็น Editable-->
+<!--แปลงเป็น Editable-->
 
-    <style>
-        /* Input field แบบ Excel */
-        .excel-input {
-            width: 100%;
-            min-width: 100px;
-            /* ให้ cell แสดงเต็มความยาวที่ต้องการ */
+<style>
+    /* Input field แบบ Excel */
+    .excel-input {
+        width: 100%;
+        min-width: 100px;
+        /* ให้ cell แสดงเต็มความยาวที่ต้องการ */
 
-            background: transparent;
-            /* พื้นหลังใส */
-            font-size: 10px;
-            text-align: center;
-            box-sizing: border-box;
-            /* รวม padding + border ใน width */
-            white-space: nowrap;
-            /* อยู่บรรทัดเดียว */
+        background: transparent;
+        /* พื้นหลังใส */
+        font-size: 10px;
+        text-align: center;
+        box-sizing: border-box;
+        /* รวม padding + border ใน width */
+        white-space: nowrap;
+        /* อยู่บรรทัดเดียว */
 
-            text-overflow: ellipsis;
-            /* แสดง ... ถ้ายาวเกิน */
-            transition: all 0.2s;
-            /* effect เวลา focus */
-        }
+        text-overflow: ellipsis;
+        /* แสดง ... ถ้ายาวเกิน */
+        transition: all 0.2s;
+        /* effect เวลา focus */
+    }
 
-        /* Focus / editable state */
-        .excel-input:focus,
-        .excel-input.active-hover {
-            outline: 1px solid #3b82f6;
-            /* สีฟ้า */
-            background: #eef6ff;
-            /* ฟีล Excel */
-            border-radius: 10%;
-            /* มุมโค้งเล็กน้อย */
-        }
+    /* Focus / editable state */
+    .excel-input:focus,
+    .excel-input.active-hover {
+        outline: 1px solid #3b82f6;
+        /* สีฟ้า */
+        background: #eef6ff;
+        /* ฟีล Excel */
+        border-radius: 10%;
+        /* มุมโค้งเล็กน้อย */
+    }
 
-        /* Readonly cell */
-        .readonly-cell {
-            background-color: #f5f5f5;
-            /* เทาอ่อน */
-            cursor: not-allowed;
-        }
-    </style>
+    /* Readonly cell */
+    .readonly-cell {
+        background-color: #f5f5f5;
+        /* เทาอ่อน */
+        cursor: not-allowed;
+    }
+</style>
 
-    <style>
-        .swal-title,
-        .swal-text {
-            font-family: 'Sarabun', sans-serif;
-        }
+<style>
+    .swal-title,
+    .swal-text {
+        font-family: 'Sarabun', sans-serif;
+    }
 
-        .readonly-cell {
-            background-color: transparent !important;
-            color: #000;
-        }
-    </style>
+    .readonly-cell {
+        background-color: transparent !important;
+        color: #000;
+    }
+</style>
 
-    <style>
-        /* input เงิน */
-        .money-input {
-            text-align: right;
-        }
+<style>
+    /* input เงิน */
+    .money-input {
+        text-align: right;
+    }
 
-        /* readonly แต่ไม่เอาพื้นหลังเทา */
-        input[readonly] {
-            background-color: transparent !important;
-            border: none;
-            box-shadow: none;
-            cursor: default;
-        }
+    /* readonly แต่ไม่เอาพื้นหลังเทา */
+    input[readonly] {
+        background-color: transparent !important;
+        border: none;
+        box-shadow: none;
+        cursor: default;
+    }
 
-        /* กัน disabled ทำให้สีจาง */
-        input[disabled] {
-            background-color: transparent !important;
-            color: inherit;
-            opacity: 1;
-        }
-    </style>
+    /* กัน disabled ทำให้สีจาง */
+    input[disabled] {
+        background-color: transparent !important;
+        color: inherit;
+        opacity: 1;
+    }
+</style>
 
-    <!-- Hover สำหรับ Filter -->
-    <style>
-        .filter-active i {
-            color: #60a5fa !important;
-        }
+<!-- Hover สำหรับ Filter -->
+<style>
+    .filter-active i {
+        color: #60a5fa !important;
+    }
 
-        thead th:hover .filter-icon:not(.filter-active) i {
-            color: #93c5fd;
-        }
+    thead th:hover .filter-icon:not(.filter-active) i {
+        color: #93c5fd;
+    }
 
-        .font-sarabun {
-            font-family: 'Sarabun', sans-serif !important;
-        }
-    </style>
+    .font-sarabun {
+        font-family: 'Sarabun', sans-serif !important;
+    }
+</style>
 
-    <!-- สคริปต์จัดการ input เงิน -->
-    <script>
-        function parseMoney(val) {
+<!-- สคริปต์จัดการ input เงิน -->
+<script>
+    function parseMoney(val) {
             if (!val) return 0;
             return parseFloat(val.replace(/,/g, '')) || 0;
         }
@@ -185,6 +185,105 @@
             row.find('.gross-profit').val(formatMoney(grossProfit));
             row.find('.gross-margin').val(formatMoney(grossMargin) + '%');
         });
+</script>
+
+<!-- สคริปต์จัดการ input เงิน -->
+    <script>
+        /* ===============================
+               Utils
+            ================================ */
+        function parseMoney(val) {
+            if (!val) return 0;
+            return parseFloat(val.replace(/,/g, '')) || 0;
+        }
+
+        function formatMoney(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        /* ===============================
+           Store original value
+        ================================ */
+        $(document).on('focus', '.money-input', function() {
+            $(this).data('original', $(this).val());
+        });
+
+        /* ===============================
+           Allow only number + dot
+           (ไม่แตะ value → cursor ไม่ดีด)
+        ================================ */
+        $(document).on('beforeinput', '.money-input', function(e) {
+            if (e.data && !/[\d.]/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+
+        /* ===============================
+           Realtime calculation ONLY
+           (ห้าม set value ช่องที่พิมพ์)
+        ================================ */
+        $(document).on('input', '.money-input', function() {
+            let row = $(this).closest('tr');
+
+            // 🔹 1. อ่าน raw value ก่อน (ยังไม่ parse)
+            let revenueRaw = row.find('[data-field="Estimated_Revenue_PJ"]').val();
+            let serviceRaw = row.find('[data-field="Estimated_Service_Cost_PJ"]').val();
+            let materialRaw = row.find('[data-field="Estimated_Material_Cost_PJ"]').val();
+
+            // 🔹 2. ถ้ายังพิมพ์ไม่จบ → STOP
+            let incomplete = [revenueRaw, serviceRaw, materialRaw].some(v =>
+                v === '.' || (v && v.endsWith('.'))
+            );
+
+            if (incomplete) {
+                return; // ❌ ยังไม่คำนวณ
+            }
+
+            // 🔹 3. ค่อย parse เมื่อค่าพร้อม
+            let revenue = parseMoney(revenueRaw);
+            let service = parseMoney(serviceRaw);
+            let material = parseMoney(materialRaw);
+
+            let grossProfit = revenue - service - material;
+            let grossMargin = revenue !== 0 ? (grossProfit / revenue) * 100 : 0;
+
+            row.find('.gross-profit').val(formatMoney(grossProfit));
+            row.find('.gross-margin').val(formatMoney(grossMargin) + '%');
+        });
+
+
+        /* ===============================
+           Blur → validate + format
+        ================================ */
+        $(document).on('blur', '.money-input', function() {
+            let field = $(this).data('field');
+            let raw = $(this).val().replace(/,/g, '').trim();
+            let old = $(this).data('original') ?? '';
+
+            /* ---------- Revenue rule ---------- */
+            if (field === 'Estimated_Revenue_PJ') {
+                if (raw === '' || isNaN(raw) || parseFloat(raw) === 0) {
+                    // revert ค่าเดิม
+                    $(this).val(old);
+                    return;
+                }
+            }
+
+            /* ---------- Other money fields ---------- */
+            if (raw === '' || isNaN(raw)) {
+                $(this).val(old);
+                return;
+            }
+
+            let num = parseFloat(raw);
+            $(this).val(formatMoney(num));
+
+            // update original ใหม่
+            $(this).data('original', $(this).val());
+        });
     </script>
 
 
@@ -193,425 +292,479 @@
 
 
 
-    <!-- Main Content -->
-    <main class="flex-1 p-1 bg-gray-100 overflow-y-auto">
+<!-- Main Content -->
+<main class="flex-1 bg-gray-100 overflow-y-auto">
 
+    <div class="flex justify-between items-center bg-white p-4 rounded-xl mb-5 shadow-md ">
 
-        <div class="bg-white p-4 rounded-xl shadow-md min-h-[680px]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full items-stretch">
 
-            <div>
-                <h2 class="text-center my-3 text-2xl font-bold">
-                    16_TRUE Project Database
-                </h2>
+            <!-- Summary -->
+            <div class="bg-white p-2 rounded-xl shadow-md min-h-[60px]">
+                <h3 class="text-sm font-sarabun text-gray-500 mb-2">Added Job Total</h3>
+                <div class="text-4xl font-sarabun text-blue-600 text-center">50</div>
+                <div class="text-sm text-gray-500 mt-1 text-center">
+                    Completed: <span class="font-sarabun">90</span>
+                </div>
             </div>
 
-            <!-- Container ปุ่ม -->
-            <div class="container mx-auto mb-2">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Reject -->
+            <div class="bg-white p-2 rounded-xl shadow-md min-h-[60px]">
+                <h3 class="text-sm font-sarabun text-gray-500 mb-2">Reject</h3>
+                <div class="text-4xl font-sarabun text-red-600 text-center">70</div>
+            </div>
 
-                    {{-- 1. ปุ่ม Export (อยู่ทางซ้าย) --}}
-                    <div class="order-2 sm:order-1">
-                        <button type="button" id="exportToExcel" onclick="exportToExcel()"
-                            class="flex items-center px-5 py-2.5 rounded-xl font-semibold text-white text-sm
-                       bg-gradient-to-r from-green-600 to-green-500
-                       shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200">
-                            <i class="fas fa-file-excel mr-2 text-lg"></i>
-                            Export Visible Data
+            <!-- Pending -->
+            <div class="bg-white p-2 rounded-xl shadow-md min-h-[60px]">
+                <h3 class="text-sm font-sarabun text-gray-500 mb-2 ">Pending</h3>
+                <div class="text-4xl font-sarabun text-orange-400 text-center">90</div>
+            </div>
+
+            <!-- Approved -->
+            <div class="bg-white p-2 rounded-xl shadow-md min-h-[60px]">
+                <h3 class="text-sm font-sarabun text-gray-500 mb-2 ">Approved</h3>
+                <div class="text-4xl font-sarabun text-green-600 text-center">80</div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="bg-white p-4 rounded-xl shadow-md">
+        
+
+
+        <!-- Container ปุ่ม -->
+        <div class="container mx-auto mb-2">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+                {{-- 1. ปุ่ม Export (ขวาใน Desktop) --}}
+                <div class="order-1 sm:order-2">
+                    <button type="button" id="exportToExcel" onclick="exportToExcel()" class="px-3 py-1.5 rounded-md font-sarabun text-sm text-white
+                bg-gradient-to-r from-green-600 to-green-500
+                shadow hover:shadow-md hover:scale-[1.02] transition-all">
+                        <i class="fas fa-file-excel mr-2 text-lg"></i>
+                        Export Visible Data
+                    </button>
+                </div>
+
+                {{-- 2. ปุ่ม Permission (ซ้ายใน Desktop) --}}
+                @php
+                $isAdmin = Auth::check() && Auth::user()->status === 'Admin';
+                @endphp
+
+                @if ($isAdmin)
+                <div class="order-2 sm:order-1 flex items-center gap-3">
+                    <button onclick="document.getElementById('permissionModal').classList.remove('hidden')" class="group flex items-center px-3 py-1.5 bg-white text-indigo-600 border border-indigo-200
+                font-bold text-sm rounded-xl shadow-[0_2px_10px_-3px_rgba(79,70,229,0.2)]
+                hover:bg-indigo-600 hover:text-white hover:border-indigo-600
+                hover:shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)]
+                hover:-translate-y-0.5 active:scale-95 active:translate-y-0
+                transition-all duration-300 ease-out">
+
+                        <i
+                            class="fas fa-user-shield mr-2.5 text-base transition-transform duration-300 group-hover:rotate-12"></i>
+                        <span class="tracking-wide">Permission</span>
+                    </button>
+                </div>
+                @endif
+
+            </div>
+        </div>
+        
+        <!-- Modal -->
+        <form action="{{ route('permissions.save', $projectCode) }}" method="POST">
+            @csrf
+
+            <input type="hidden" name="project_code" value="{{ $projectCode }}">
+
+
+            <div id="permissionModal"
+                class="fixed inset-0 z-[500] hidden bg-black bg-opacity-50 flex items-center justify-center ">
+                <div class="bg-white w-full max-w-[1200px] h-[80vh] rounded-xl shadow-lg overflow-hidden flex flex-col">
+
+                    <!-- Header -->
+                    <div class="flex justify-between items-center p-4 border-b border-gray-300">
+                        <h6 class="text-lg font-bold">Manage Permissions</h6>
+                        <button type="button"
+                            onclick="document.getElementById('permissionModal').classList.add('hidden')"
+                            class="text-gray-500 hover:text-gray-800">&times;</button>
+
+                    </div>
+
+                    <!-- Body -->
+                    <div class="overflow-auto flex-1 bg-gray-50 rounded-md max-h-[500px]">
+                        <div style="width: 7500px;">
+                            <table class="w-full border-collapse text-center text-xs font-sarabun">
+
+                                <thead class="bg-blue-950 text-white">
+                                    <tr class="h-8 text-xs">
+
+                                        <th class="sticky top-0 left-0 z-[100] bg-blue-950 border px-1 w-[140px] ">
+                                            User
+                                        </th>
+
+                                        <th class="sticky top-0 left-[169px] z-[100] bg-blue-950 border px-1 w-[100px]">
+                                            Project Member
+                                        </th>
+
+                                        <th class="sticky top-0 left-[289px] z-[100] bg-blue-950 border px-1 w-[140px]">
+                                            Project Role
+                                        </th>
+
+                                        <th class="sticky top-0 border px-1 w-[140px]" style="background-color: green">Customer
+                                            Region</th>
+                                        <th class="sticky top-0 border px-1 w-[140px]" style="background-color: green">Estimated
+                                            Revenue</th>
+                                        <th class="sticky top-0 border px-1 w-[140px]" style="background-color: green">Estimated
+                                            Service Cost</th>
+                                        <th class="sticky top-0 border px-1 w-[140px]" style="background-color: green">Estimated
+                                            Material Cost</th>
+
+                                        <!-- Read / invisible   -->
+                                        <th class="sticky top-0 border px-1 w-[140px]" style="background-color: blue">Estimated
+                                            Gross
+                                            Profit</th>
+                                        <th class="sticky top-0 border px-1 w-[150px]" style="background-color: blue">Estimated
+                                            Gross
+                                            Profit Margin</th>
+
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col1</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col2</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col3</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col4</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col5</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col6</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col7</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col8</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col9</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col10</th>
+
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col11</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col12</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col13</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col14</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col15</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col16</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col17</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col18</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col19</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col20</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col21</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col22</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col23</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col24</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col25</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col26</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col27</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col28</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col29</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col30</th>
+
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col31</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col32</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col33</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col34</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col35</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col36</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col37</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col38</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col39</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col40</th>
+
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col41</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col42</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col43</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col44</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col45</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col46</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col47</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col48</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col49</th>
+                                        <th class="sticky top-0 border px-1 w-[100px] bg-red-400 text-white">Col50</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach ($users as $user)
+                                    <tr class="group h-8 text-xs odd:bg-white even:bg-gray-50 hover:bg-red-100 border-b border-gray-200 transition table-row-divider">
+
+                                        <!-- User -->
+                                        <td
+                                            class="sticky left-0 z-[40] bg-white group-hover:bg-red-100 px-2 transition">
+                                            {{ $user->name }}
+                                        </td>
+
+                                        <!-- Project Member -->
+                                        <td class="sticky left-[169px] z-[40] bg-inherit group-hover:bg-red-100 px-2 transition">
+                                            <select name="member_status[{{ $user->id }}]"
+                                                class="text-xs p-1 border rounded w-full bg-white">
+
+
+                                                <option value="no" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->member_status === 'no' ? 'selected' : ''
+                                                    }}>
+                                                    No
+                                                </option>
+
+                                                <option value="yes" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->member_status === 'yes' ? 'selected' : ''
+                                                    }}>
+                                                    Yes
+                                                </option>
+
+                                            </select>
+                                        </td>
+
+
+                                        <!-- Project Role -->
+                                        <td class="sticky left-[289px] z-[40] bg-inherit group-hover:bg-red-100 px-2 transition">
+                                            <select name="project_role[{{ $user->id }}]"
+                                                class="text-xs p-1 border rounded w-full bg-white hover:bg-gray-50 font-medium project-role"
+                                                data-user-id="{{ $user->id }}">
+
+                                                <!-- ค่าเริ่มต้น No -->
+                                                <option value="" {{ !isset($permissions[$user->id]) ||
+                                                    $permissions[$user->id]->project_role === null ? 'selected' : '' }}>
+                                                    No
+                                                </option>
+
+                                                <option value="Project Manager" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->project_role === 'Project Manager'
+                                                    ? 'selected'
+                                                    : '' }}>
+                                                    Project Manager
+                                                </option>
+
+                                                <option value="Project Admin" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->project_role === 'Project Admin'
+                                                    ? 'selected'
+                                                    : '' }}>
+                                                    Project Admin
+                                                </option>
+
+                                                <option value="Site Supervisor" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->project_role === 'Site Supervisor'
+                                                    ? 'selected'
+                                                    : '' }}>
+                                                    Site Supervisor
+                                                </option>
+
+                                                <option value="Project Director" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->project_role === 'Project Director'
+                                                    ? 'selected'
+                                                    : '' }}>
+                                                    Project Director
+                                                </option>
+                                            </select>
+                                        </td>
+
+
+
+                                        {{-- ===== Project-level permissions ===== --}}
+                                        @php
+                                        $projectFields = [
+                                        'Customer_Region_PJ',
+                                        'Estimated_Revenue_PJ',
+                                        'Estimated_Service_Cost_PJ',
+                                        'Estimated_Material_Cost_PJ',
+
+                                        // 🔥 2 อันใหม่ (read / invisible เท่านั้น)
+                                        'Estimated_Gross_Profit_PJ',
+                                        'Estimated_Gross_Profit_Margin_PJ',
+                                        ];
+
+                                        // field ที่ห้าม write
+                                        $readOnlyFields = [
+                                        'Estimated_Gross_Profit_PJ',
+                                        'Estimated_Gross_Profit_Margin_PJ',
+                                        ];
+                                        @endphp
+
+                                        @foreach ($projectFields as $field)
+                                        <td class="px-2">
+                                            <select name="{{ $field }}_permission[{{ $user->id }}]"
+                                                class="text-xs p-1 border rounded w-full bg-white project-permission"
+                                                data-field="{{ $field }}" data-user-id="{{ $user->id }}">
+
+                                                <option value="invisible" {{ isset($permissions[$user->id]) &&
+                                                    ($permissions[$user->id]->$field ?? 'invisible') === 'invisible'
+                                                    ? 'selected'
+                                                    : '' }}>
+                                                    Invisible
+                                                </option>
+
+                                                <option value="read" {{ isset($permissions[$user->id]) &&
+                                                    ($permissions[$user->id]->$field ?? '') === 'read' ? 'selected' : ''
+                                                    }}>
+                                                    Read
+                                                </option>
+
+                                                {{-- ❌ ไม่ให้ Write สำหรับ Gross --}}
+                                                @if (!in_array($field, $readOnlyFields))
+                                                <option value="write" {{ isset($permissions[$user->id]) &&
+                                                    ($permissions[$user->id]->$field ?? '') === 'write' ? 'selected' :
+                                                    '' }}>
+                                                    Write
+                                                </option>
+                                                @endif
+
+                                            </select>
+                                        </td>
+                                        @endforeach
+
+
+                                        <!-- Dynamic Columns -->
+                                        @for ($i = 1; $i <= 50; $i++) <td class="px-2">
+                                            <select name="col{{ $i }}_permission[{{ $user->id }}]"
+                                                class="text-xs p-1 border rounded w-full bg-white hover:bg-gray-50 dynamic-col"
+                                                data-col="{{ $i }}" data-user-id="{{ $user->id }}">
+                                                <option value="invisible" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->{"col$i"} === 'invisible' ? 'selected' : ''
+                                                    }}>
+                                                    Invisible</option>
+                                                <option value="read" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->{"col$i"} === 'read' ? 'selected' : '' }}>
+                                                    Read</option>
+                                                <option value="write" {{ isset($permissions[$user->id]) &&
+                                                    $permissions[$user->id]->{"col$i"} === 'write' ? 'selected' : '' }}>
+                                                    Write</option>
+                                            </select>
+                                            </td>
+                                            @endfor
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <!-- Footer -->
+                    <div class="p-4 border-t border-gray-300 flex justify-end space-x-2">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Save Permissions
                         </button>
                     </div>
 
-                    {{-- 2. ปุ่ม Permission (อยู่ทางขวา) --}}
-
-                    @php
-                        $isAdmin = Auth::check() && Auth::user()->status === 'Admin';
-                    @endphp
-
-                    @if ($isAdmin)
-                        <div class="order-1 sm:order-2 flex items-center gap-3">
-
-                            <button onclick="document.getElementById('permissionModal').classList.remove('hidden')"
-                                class="group flex items-center px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-bold text-sm rounded-xl shadow-[0_2px_10px_-3px_rgba(79,70,229,0.2)]
-           hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0
-           transition-all duration-300 ease-out">
-
-                                {{-- Icon with animation on hover --}}
-                                <i
-                                    class="fas fa-user-shield mr-2.5 text-base transition-transform duration-300 group-hover:rotate-12"></i>
-
-                                <span class="tracking-wide">Permission</span>
-                            </button>
-                        </div>
-                    @endif
 
                 </div>
             </div>
+        </form>
+
+        <style>
+            .custom-container {
+                height: 60px;
+                /* Adjust the height of the container as needed */
+            }
+
+            .fixed-width-input {
+                height: 40px;
+                /* Adjust the height of the input field */
+                width: 170px;
+            }
+
+            .btn {
+                height: 40px;
+            }
+
+            #exportButton {
+                width: 125px;
+            }
+        </style>
+
+
+        <style>
+            .input-group {
+                position: relative;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                width: 25%;
+            }
+
+            .table-container {
+                width: 100%;
+                max-height: 500px;
+                overflow-x: auto;
+                overflow-y: auto;
+            }
+
+
+            .table-container table {
+                border-collapse: separate !important;
+                border-spacing: 0;
+            }
+
+            /* เส้นขอบเฉพาะด้านล่าง */
+            .table-container th,
+            .table-container td {
+                border: none !important;
+                box-shadow: inset 0 -1px 0 #ddd;
+            }
+
+            .table-container td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .table-container th {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                white-space: nowrap;
+                position: sticky;
+                top: 0px;
+                text-align: center;
+                background-color: #172554;
+                /* เทียบเท่า bg-blue-950 */
+                color: white;
+                /* เพิ่มเพื่อให้ตัวหนังสืออ่านง่าย */
+            }
+
+            .table-container tr:hover td,
+            .table-container tr:hover th {
+                outline-color: #ffffff !important;
+            }
+
+            .excel-input,
+            .excel-input:hover,
+            .excel-input:focus {
+                outline: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+        </style>
+
+
+        <!-- ตารางข้อมูล โปรเจค-->
+        <div>
+
+            @php
+            $projectCols = [
+            'Customer_Region_PJ' => 'Customer Region',
+            'Estimated_Revenue_PJ' => 'Estimated Revenue',
+            'Estimated_Service_Cost_PJ' => 'Estimated Service Cost',
+            'Estimated_Material_Cost_PJ' => 'Estimated Material Cost',
+            ];
+
+            $moneyFields = ['Estimated_Revenue_PJ', 'Estimated_Service_Cost_PJ', 'Estimated_Material_Cost_PJ'];
+            @endphp
 
-            <!-- Modal -->
-            <form action="{{ route('permissions.save', $projectCode) }}" method="POST">
-                @csrf
-
-                <input type="hidden" name="project_code" value="{{ $projectCode }}">
-
-
-                <div id="permissionModal"
-                    class="fixed inset-0 z-[500] hidden bg-black bg-opacity-50 flex items-center justify-center ">
-                    <div class="bg-white w-full max-w-[1200px] h-[80vh] rounded-xl shadow-lg overflow-hidden flex flex-col">
-
-                        <!-- Header -->
-                        <div class="flex justify-between items-center p-4 border-b border-gray-300">
-                            <h6 class="text-lg font-bold">Manage Permissions</h6>
-                            <button type="button"
-                                onclick="document.getElementById('permissionModal').classList.add('hidden')"
-                                class="text-gray-500 hover:text-gray-800">&times;</button>
-
-                        </div>
-
-                        <!-- Body -->
-                        <div class="overflow-auto flex-1 p-3 bg-gray-50 rounded-md">
-                            <div class="min-w-[6000px]">
-                                <table class="w-full border-collapse border border-gray-300 text-center text-sm">
-                                    <thead class="bg-blue-950 text-white">
-                                        <tr class="h-8 text-xs">
-                                            <th class="border px-2 w-[140px]">User</th>
-                                            <th class="border px-2 w-[100px]">Project Member</th>
-                                            <th class="border px-2 w-[140px]">Project Role</th>
-
-                                            <th class="border px-2 w-[140px]" style="background-color: green">Customer
-                                                Region</th>
-                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
-                                                Revenue</th>
-                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
-                                                Service Cost</th>
-                                            <th class="border px-2 w-[140px]" style="background-color: green">Estimated
-                                                Material Cost</th>
-
-                                            <!-- Read / invisible   -->
-                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated
-                                                Gross
-                                                Profit</th>
-                                            <th class="border px-2 w-[140px]" style="background-color: blue">Estimated
-                                                Gross
-                                                Profit Margin</th>
-
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col1</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col2</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col3</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col4</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col5</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col6</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col7</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col8</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col9</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col10</th>
-
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col11</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col12</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col13</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col14</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col15</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col16</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col17</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col18</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col19</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col20</th>
-
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col21</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col22</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col23</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col24</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col25</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col26</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col27</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col28</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col29</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col30</th>
-
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col31</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col32</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col33</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col34</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col35</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col36</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col37</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col38</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col39</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col40</th>
-
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col41</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col42</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col43</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col44</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col45</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col46</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col47</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col48</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col49</th>
-                                            <th class="border px-2 w-[100px] bg-red-400 text-white">Col50</th>
-
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @foreach ($users as $user)
-                                            <tr
-                                                class="h-8 text-xs odd:bg-white even:bg-gray-100 hover:bg-blue-50 transition">
-
-                                                <!-- User -->
-                                                <td class="border px-2 font-semibold text-gray-800">
-                                                    {{ $user->name }}
-                                                </td>
-
-                                                <!-- Project Member -->
-                                                <td class="border px-2">
-                                                    <select name="member_status[{{ $user->id }}]"
-                                                        class="text-xs p-1 border rounded w-full bg-white">
-
-
-                                                        <option value="no"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->member_status === 'no' ? 'selected' : '' }}>
-                                                            No
-                                                        </option>
-
-                                                        <option value="yes"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->member_status === 'yes' ? 'selected' : '' }}>
-                                                            Yes
-                                                        </option>
-
-                                                    </select>
-                                                </td>
-
-
-                                                <!-- Project Role -->
-                                                <td class="border px-2">
-                                                    <select name="project_role[{{ $user->id }}]"
-                                                        class="text-xs p-1 border rounded w-full bg-white hover:bg-gray-50 font-medium project-role"
-                                                        data-user-id="{{ $user->id }}">
-
-                                                        <!-- ค่าเริ่มต้น No -->
-                                                        <option value=""
-                                                            {{ !isset($permissions[$user->id]) || $permissions[$user->id]->project_role === null ? 'selected' : '' }}>
-                                                            No
-                                                        </option>
-
-                                                        <option value="Project Manager"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Manager'
-                                                                ? 'selected'
-                                                                : '' }}>
-                                                            Project Manager
-                                                        </option>
-
-                                                        <option value="Project Admin"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Admin'
-                                                                ? 'selected'
-                                                                : '' }}>
-                                                            Project Admin
-                                                        </option>
-
-                                                        <option value="Site Supervisor"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Site Supervisor'
-                                                                ? 'selected'
-                                                                : '' }}>
-                                                            Site Supervisor
-                                                        </option>
-
-                                                        <option value="Project Director"
-                                                            {{ isset($permissions[$user->id]) && $permissions[$user->id]->project_role === 'Project Director'
-                                                                ? 'selected'
-                                                                : '' }}>
-                                                            Project Director
-                                                        </option>
-                                                    </select>
-                                                </td>
-
-
-
-                                                {{-- ===== Project-level permissions ===== --}}
-                                                @php
-                                                    $projectFields = [
-                                                        'Customer_Region_PJ',
-                                                        'Estimated_Revenue_PJ',
-                                                        'Estimated_Service_Cost_PJ',
-                                                        'Estimated_Material_Cost_PJ',
-
-                                                        // 🔥 2 อันใหม่ (read / invisible เท่านั้น)
-                                                        'Estimated_Gross_Profit_PJ',
-                                                        'Estimated_Gross_Profit_Margin_PJ',
-                                                    ];
-
-                                                    // field ที่ห้าม write
-                                                    $readOnlyFields = [
-                                                        'Estimated_Gross_Profit_PJ',
-                                                        'Estimated_Gross_Profit_Margin_PJ',
-                                                    ];
-                                                @endphp
-
-                                                @foreach ($projectFields as $field)
-                                                    <td class="border px-2">
-                                                        <select
-                                                            name="{{ $field }}_permission[{{ $user->id }}]"
-                                                            class="text-xs p-1 border rounded w-full bg-white project-permission"
-                                                            data-field="{{ $field }}"
-                                                            data-user-id="{{ $user->id }}">
-
-                                                            <option value="invisible"
-                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? 'invisible') === 'invisible'
-                                                                    ? 'selected'
-                                                                    : '' }}>
-                                                                Invisible
-                                                            </option>
-
-                                                            <option value="read"
-                                                                {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? '') === 'read' ? 'selected' : '' }}>
-                                                                Read
-                                                            </option>
-
-                                                            {{-- ❌ ไม่ให้ Write สำหรับ Gross --}}
-                                                            @if (!in_array($field, $readOnlyFields))
-                                                                <option value="write"
-                                                                    {{ isset($permissions[$user->id]) && ($permissions[$user->id]->$field ?? '') === 'write' ? 'selected' : '' }}>
-                                                                    Write
-                                                                </option>
-                                                            @endif
-
-                                                        </select>
-                                                    </td>
-                                                @endforeach
-
-
-                                                <!-- Dynamic Columns -->
-                                                @for ($i = 1; $i <= 50; $i++)
-                                                    <td class="border px-2">
-                                                        <select
-                                                            name="col{{ $i }}_permission[{{ $user->id }}]"
-                                                            class="text-xs p-1 border rounded w-full bg-white hover:bg-gray-50 dynamic-col"
-                                                            data-col="{{ $i }}"
-                                                            data-user-id="{{ $user->id }}">
-                                                            <option value="invisible"
-                                                                {{ isset($permissions[$user->id]) && $permissions[$user->id]->{"col$i"} === 'invisible' ? 'selected' : '' }}>
-                                                                Invisible</option>
-                                                            <option value="read"
-                                                                {{ isset($permissions[$user->id]) && $permissions[$user->id]->{"col$i"} === 'read' ? 'selected' : '' }}>
-                                                                Read</option>
-                                                            <option value="write"
-                                                                {{ isset($permissions[$user->id]) && $permissions[$user->id]->{"col$i"} === 'write' ? 'selected' : '' }}>
-                                                                Write</option>
-                                                        </select>
-                                                    </td>
-                                                @endfor
-
-
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-
-                        <!-- Footer -->
-                        <div class="p-4 border-t border-gray-300 flex justify-end space-x-2">
-                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                Save Permissions
-                            </button>
-                        </div>
-
-
-                    </div>
-                </div>
-            </form>
-
-            <style>
-                .custom-container {
-                    height: 60px;
-                    /* Adjust the height of the container as needed */
-                }
-
-                .fixed-width-input {
-                    height: 40px;
-                    /* Adjust the height of the input field */
-                    width: 170px;
-                }
-
-                .btn {
-                    height: 40px;
-                }
-
-                #exportButton {
-                    width: 125px;
-                }
-            </style>
-
-
-            <style>
-                .input-group {
-                    position: relative;
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    width: 25%;
-                }
-
-                .table-container {
-                    width: 98%;
-                    max-height: 500px;
-                    overflow-x: auto;
-                    overflow-y: auto;
-                }
-
-
-                .table-container table {
-                    height: 100%;
-                    border-collapse: collapse;
-                }
-
-                .table-container td {
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    text-align: center;
-                    white-space: nowrap;
-                }
-
-                .table-container th {
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    text-align: center;
-                    white-space: nowrap;
-                    position: sticky;
-                    top: 0px;
-                    text-align: center;
-                    background-color: #172554;
-                    /* เทียบเท่า bg-blue-950 */
-                    color: white;
-                    /* เพิ่มเพื่อให้ตัวหนังสืออ่านง่าย */
-                }
-            </style>
-
-
-            <!-- ตารางข้อมูล โปรเจค-->
-            <div>
-
-                @php
-                    $projectCols = [
-                        'Customer_Region_PJ' => 'Customer Region',
-                        'Estimated_Revenue_PJ' => 'Estimated Revenue',
-                        'Estimated_Service_Cost_PJ' => 'Estimated Service Cost',
-                        'Estimated_Material_Cost_PJ' => 'Estimated Material Cost',
-                    ];
-
-                    $moneyFields = ['Estimated_Revenue_PJ', 'Estimated_Service_Cost_PJ', 'Estimated_Material_Cost_PJ'];
-                @endphp
-
-
-                <div class="table-container min-h-[490px] max-h-[490px] overflow-auto">
-
-
-                    <table
-                        class="table min-w-max table-fixed border-separate border-spacing-0 font-sarabun
-                            [--col-1:111px]
-                            [--col-2:130px]"
-                        id="table">
-                        <thead>
-                            <tr class="text-xs text-center">
+
+            <div class="table-container relative overflow-x-auto mt-2 h-[395px] font-sarabun">
+
+                <table class="table min-w-max table-fixed border-separate border-spacing-0 font-sarabun
+                            [--col-1:115px]
+                            [--col-2:130px]" id="table">
+
+                    <thead class="bg-blue-950 text-white font-sarabun text-base sticky top-0 z-[200]">
+
+                        <tr class="text-xs text-center">
 
                                 <th
                                     class=" whitespace-nowrap text-center border-b border-blue-900 group sticky top-0 left-0 z-[150] bg-blue-950 w-[var(--col-1)]">
@@ -681,8 +834,18 @@
                                     <th class="whitespace-nowrap text-center border-b border-blue-900 group"
                                         style="background:green;color:white;{{ $visibility === 'invisible' ? 'display:none;' : '' }}">
                                         <div class="flex items-center justify-center gap-2">
-                                            <span class="tracking-wide font-sarabun text-xs text-white/90">
-                                                {{ $label }}
+                                            @php
+                                                $words = explode(' ', $label);
+                                                $line1 = $words[0] ?? '';
+                                                $line2 = implode(' ', array_slice($words, 1));
+                                            @endphp
+
+                                            <span
+                                                class="tracking-wide font-sarabun text-xs text-white/90 text-center leading-tight">
+                                                {{ $line1 }}
+                                                @if ($line2)
+                                                    <br>{{ $line2 }}
+                                                @endif
                                             </span>
 
                                             <span
@@ -710,7 +873,7 @@
            {{ $gpVisibility === 'invisible' ? 'display:none;' : '' }}">
                                     <div class="flex items-center justify-center gap-2">
                                         <span class="tracking-wide font-sarabun text-xs text-white/90">
-                                            Estimated Gross Profit
+                                            Estimated <br> Gross Profit
                                         </span>
 
                                         <span
@@ -729,7 +892,7 @@
            {{ $gmVisibility === 'invisible' ? 'display:none;' : '' }}">
                                     <div class="flex items-center justify-center gap-2">
                                         <span class="tracking-wide font-sarabun text-xs text-white/90">
-                                            Estimated Gross Profit Margin
+                                            Estimated <br> Gross Profit Margin
                                         </span>
 
                                         <span
@@ -775,13 +938,13 @@
 
 
                             </tr>
-                        </thead>
+                    </thead>
 
-                        <tbody id="tableBody">
+                    <tbody id="tableBody" class="text-xs [&_input]:text-xs">
 
                             @foreach ($projectData as $item)
                                 <tr
-                                    class="group bg-white hover:bg-red-100 transition-colors font-sarabun duration-200 text-[10px]">
+                                    class="group bg-white hover:bg-red-100 transition-colors font-sarabun duration-200 text-xs">
 
                                     {{-- Refcode --}}
                                     <td
@@ -798,6 +961,7 @@
                                     <td>{{ $item->Job_Description_PJ }}</td>
                                     <td>{{ $item->Office_Code_PJ }}</td>
 
+									
                                     {{-- ===== Project Columns (tbody) ===== --}}
                                     @foreach ($projectCols as $field => $label)
                                         @php
@@ -807,10 +971,13 @@
                                             $isMoney = in_array($field, $moneyFields);
                                             $originalValue = $item->$field ?? '';
                                         @endphp
+
                                         <td class="project-col {{ $field }}"
                                             style="{{ $isInvisible ? 'display:none;' : '' }}">
+
                                             <input type="text"
-                                                class="excel-input {{ $isMoney ? 'money-input text-end' : '' }} {{ $isRead ? 'readonly-cell' : '' }}"
+                                                class="excel-input {{ $isMoney ? 'money-input' : '' }} {{ $isRead ? 'readonly-cell' : '' }}"
+                                                style="{{ $isMoney ? 'text-align:right;' : '' }}"
                                                 value="{{ $isMoney
                                                     ? ($originalValue !== null && $originalValue !== ''
                                                         ? number_format((float) str_replace(',', '', $originalValue), 2)
@@ -822,6 +989,7 @@
                                                 @if ($field === 'Estimated_Revenue_PJ') oninput="validateRevenue(this)" @endif>
                                         </td>
                                     @endforeach
+
 
 
                                     <!-- Gross Profit and Margin -->
@@ -840,6 +1008,7 @@
 
                                     <td style="{{ $gpVisibility === 'invisible' ? 'display:none;' : '' }}">
                                         <input type="text" class="excel-input gross-profit text-end readonly-cell"
+											   style="text-align: right;"
                                             value="{{ number_format($grossProfit, 2) }}" readonly disabled
                                             tabindex="-1">
                                     </td>
@@ -851,8 +1020,6 @@
                                             value="{{ number_format($grossMargin, 2) }}%" readonly disabled
                                             tabindex="-1">
                                     </td>
-
-
 
 
 
@@ -878,153 +1045,150 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
-                </div>
-
-            </div>
-
-            <div id="listViewPagination"
-                class="mt-4 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 p-5 bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-300">
-
-                <div class="flex items-center space-x-3 order-2 lg:order-1">
-                    <label for="rowsPerPageList"
-                        class="font-sarabun text-xs font-medium tracking-wide text-gray-600">แสดงรายการ:</label>
-                    <div class="relative">
-                        <select id="rowsPerPageList" onchange="changeRowsPerPage(this.value)"
-                            class="block py-2 pl-4 pr-10 border border-gray-200 rounded-xl text-xs font-sarabun bg-gray-50 cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
-                            <option value="10" selected>10 รายการ</option>
-                            <option value="20">20 รายการ</option>
-                        </select>
-                        {{-- Custom Arrow Icon --}}
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <nav class="flex items-center space-x-2 order-1 lg:order-2" aria-label="Pagination">
-                    {{-- Previous Button --}}
-                    <button id="prevPageBtnList" onclick="goToPage(currentPage - 1)"
-                        class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
-                        <i class="fa-solid fa-chevron-left text-xs transition-transform group-hover:-translate-x-0.5"></i>
-                    </button>
-
-                    {{-- Page Numbers Container --}}
-                    <div id="pageNumbersList" class="flex items-center space-x-1">
-                        {{-- ตัวอย่างปุ่ม Active --}}
-                        <button
-                            class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-sarabun text-sm shadow-md shadow-indigo-200">1</button>
-                        <button
-                            class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">2</button>
-                        <button
-                            class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">3</button>
-                    </div>
-
-                    {{-- Next Button --}}
-                    <button id="nextPageBtnList" onclick="goToPage(currentPage + 1)"
-                        class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
-                        <i class="fa-solid fa-chevron-right text-xs transition-transform group-hover:translate-x-0.5"></i>
-                    </button>
-                </nav>
-
-                <div class="order-3 text-right">
-                    <span id="paginationSummaryList"
-                        class="text-xs font-sarabun text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
-                        แสดง <span class="text-indigo-600 font-sarabun">1-10</span> จากทั้งหมด <span
-                            class="text-gray-900 font-sarabun">15</span> รายการ
-                    </span>
-                </div>
+                </table>
             </div>
         </div>
+        <div id="listViewPagination"
+            class="mt-4 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 p-5 bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-300">
 
-    </main>
-
-    <!-- ก้อน Filter ที่ใช้ทุกคอลั่ม -->
-    <div id="column-filter-modal" class="fixed inset-0 z-[300] hidden bg-transparent">
-        <div id="column-filter-content" onclick="event.stopPropagation()"
-            class="shadow-2xl bg-white rounded-xl flex flex-col w-[300px] h-[450px] absolute border border-gray-100">
-
-
-            <div class="px-2 pt-2">
-                <button type="button" onclick="clearColumnFilterExcel()"
-                    class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
-                    <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
-                        <i class="fa-solid fa-filter-circle-xmark"></i>
-                    </div>
-                    <span>Clear Filter from this column</span>
-                </button>
-            </div>
-
-            <div class="px-2 pt-2">
-                <button type="button" onclick="clearAllTableFilters()"
-                    class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
-                    <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
-                        <i class="fa-solid fa-broom"></i>
-                    </div>
-                    <span>Clear Filter from all columns</span>
-                </button>
-            </div>
-
-
-
-            <!-- Selection and Sorting Controls -->
-            <div class="px-4 pt-3 pb-2 border-b border-gray-100">
-                <!-- Select / Deselect All -->
-                <div class="flex justify-between space-x-2 mb-3">
-                    <button type="button" id="selectAllFilter" onclick="selectAll()"
-                        class="w-1/2 text-xs font-sarabun text-center bg-green-300 hover:bg-green-400 text-gray-800 rounded py-1">
-                        Select All
-                    </button>
-                    <button type="button" id="deselectAllFilter" onclick="deselectAll()"
-                        class="w-1/2 text-xs font-sarabun text-center bg-red-300 hover:bg-red-400 text-gray-800 rounded py-1">
-                        Deselect All
-                    </button>
-                </div>
-
-                <!-- Sort Buttons -->
-                <div class="flex justify-between space-x-2">
-                    <button type="button" onclick="sortAZ()"
-                        class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
-                        <i data-lucide="arrow-down-a-to-z" class="w-3.5 h-3.5"></i>
-                        <span>Sort A &rarr; Z</span>
-                    </button>
-                    <button type="button" onclick="sortZA()"
-                        class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
-                        <i data-lucide="arrow-up-z-to-a" class="w-3.5 h-3.5"></i>
-                        <span>Sort Z &rarr; A</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Search Input -->
-            <div class="px-4 py-3 border-b border-gray-100">
+            <div class="flex items-center space-x-3 order-2 lg:order-1">
+                <label for="rowsPerPageList"
+                    class="font-sarabun text-xs font-medium tracking-wide text-gray-600">แสดงรายการ:</label>
                 <div class="relative">
-                    <i data-lucide="search"
-                        class="fa-solid fa-magnifying-glass w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                    <input type="text" id="column-filter-search" placeholder=""
-                        class="pl-9 pr-3 w-full h-9 outline-none bg-gray-50 border border-gray-200 rounded-lg text-sm transition-all focus:border-blue-400 focus:bg-white"
-                        oninput="handleSearch(this.value)" onkeydown="handleSearchEnter(event)">
+                    <select id="rowsPerPageList" onchange="changeRowsPerPage(this.value)"
+                        class="block py-2 pl-4 pr-10 border border-gray-200 rounded-xl text-xs font-sarabun bg-gray-50 cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
+                        <option value="10" selected>10 รายการ</option>
+                        <option value="20">20 รายการ</option>
+                    </select>
+                    {{-- Custom Arrow Icon --}}
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- Checkbox List -->
-            <div id="column-filter-checkbox-list"
-                class="overflow-y-auto font-sarabun px-4 py-2 text-sm max-h-60 flex-grow">
-                <!-- Checkboxes generated by JS -->
-            </div>
+            <nav class="flex items-center space-x-2 order-1 lg:order-2" aria-label="Pagination">
+                {{-- Previous Button --}}
+                <button id="prevPageBtnList" onclick="goToPage(currentPage - 1)"
+                    class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                    <i class="fa-solid fa-chevron-left text-xs transition-transform group-hover:-translate-x-0.5"></i>
+                </button>
 
-            <!-- Apply / Cancel Footer -->
-            <div class="flex justify-end space-x-2 border-t px-4 py-3 bg-gray-50 rounded-b-xl">
-                <button type="button" onclick="applyColumnFilter()"
-                    class="bg-blue-600 text-white px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-blue-700 transition shadow-md">OK</button>
-                <button type="button" onclick="closeColumnFilterModal()"
-                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-gray-100 transition shadow-sm">Cancel</button>
+                {{-- Page Numbers Container --}}
+                <div id="pageNumbersList" class="flex items-center space-x-1">
+                    {{-- ตัวอย่างปุ่ม Active --}}
+                    <button
+                        class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-sarabun text-sm shadow-md shadow-indigo-200">1</button>
+                    <button
+                        class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">2</button>
+                    <button
+                        class="w-10 h-10 rounded-xl bg-white text-gray-600 font-sarabun text-sm hover:bg-indigo-50 transition-all">3</button>
+                </div>
+
+                {{-- Next Button --}}
+                <button id="nextPageBtnList" onclick="goToPage(currentPage + 1)"
+                    class="pagination-btn group flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none shadow-sm">
+                    <i class="fa-solid fa-chevron-right text-xs transition-transform group-hover:translate-x-0.5"></i>
+                </button>
+            </nav>
+
+            <div class="order-3 text-right">
+                <span id="paginationSummaryList"
+                    class="text-xs font-sarabun text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
+                    แสดง <span class="text-indigo-600 font-sarabun">1-10</span> จากทั้งหมด <span
+                        class="text-gray-900 font-sarabun">15</span> รายการ
+                </span>
             </div>
         </div>
     </div>
 
-    <script>
-        function storeOriginal(input) {
+</main>
+
+<!-- ก้อน Filter ที่ใช้ทุกคอลั่ม -->
+<div id="column-filter-modal" class="fixed inset-0 z-[300] hidden bg-transparent">
+    <div id="column-filter-content" onclick="event.stopPropagation()"
+        class="shadow-2xl bg-white rounded-xl flex flex-col w-[300px] h-[450px] absolute border border-gray-100">
+
+
+        <div class="px-2 pt-2">
+            <button type="button" onclick="clearColumnFilterExcel()"
+                class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
+                <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+                </div>
+                <span>Clear Filter from this column</span>
+            </button>
+        </div>
+
+        <div class="px-2 pt-2">
+            <button type="button" onclick="clearAllTableFilters()"
+                class="w-full flex items-center gap-3 px-3 py-2 text-xs font-sarabun text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all group">
+                <div class="w-7 h-7 flex items-center justify-center bg-slate-100 group-hover:bg-red-100 rounded-lg">
+                    <i class="fa-solid fa-broom"></i>
+                </div>
+                <span>Clear Filter from all columns</span>
+            </button>
+        </div>
+
+
+
+        <!-- Selection and Sorting Controls -->
+        <div class="px-4 pt-3 pb-2 border-b border-gray-100">
+            <!-- Select / Deselect All -->
+            <div class="flex justify-between space-x-2 mb-3">
+                <button type="button" id="selectAllFilter" onclick="selectAll()"
+                    class="w-1/2 text-xs font-sarabun text-center bg-green-300 hover:bg-green-400 text-gray-800 rounded py-1">
+                    Select All
+                </button>
+                <button type="button" id="deselectAllFilter" onclick="deselectAll()"
+                    class="w-1/2 text-xs font-sarabun text-center bg-red-300 hover:bg-red-400 text-gray-800 rounded py-1">
+                    Deselect All
+                </button>
+            </div>
+
+            <!-- Sort Buttons -->
+            <div class="flex justify-between space-x-2">
+                <button type="button" onclick="sortAZ()"
+                    class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                    <i data-lucide="arrow-down-a-to-z" class="w-3.5 h-3.5"></i>
+                    <span>Sort A &rarr; Z</span>
+                </button>
+                <button type="button" onclick="sortZA()"
+                    class="w-1/2 text-xs font-sarabun text-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded py-1">
+                    <i data-lucide="arrow-up-z-to-a" class="w-3.5 h-3.5"></i>
+                    <span>Sort Z &rarr; A</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Input -->
+        <div class="px-4 py-3 border-b border-gray-100">
+            <div class="relative">
+                <i data-lucide="search"
+                    class="fa-solid fa-magnifying-glass w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                <input type="text" id="column-filter-search" placeholder=""
+                    class="pl-9 pr-3 w-full h-9 outline-none bg-gray-50 border border-gray-200 rounded-lg text-sm transition-all focus:border-blue-400 focus:bg-white"
+                    oninput="handleSearch(this.value)" onkeydown="handleSearchEnter(event)">
+            </div>
+        </div>
+
+        <!-- Checkbox List -->
+        <div id="column-filter-checkbox-list" class="overflow-y-auto font-sarabun px-4 py-2 text-sm max-h-60 flex-grow">
+            <!-- Checkboxes generated by JS -->
+        </div>
+
+        <!-- Apply / Cancel Footer -->
+        <div class="flex justify-end space-x-2 border-t px-4 py-3 bg-gray-50 rounded-b-xl">
+            <button type="button" onclick="applyColumnFilter()"
+                class="bg-blue-600 text-white px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-blue-700 transition shadow-md">OK</button>
+            <button type="button" onclick="closeColumnFilterModal()"
+                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 text-xs rounded-lg font-sarabun hover:bg-gray-100 transition shadow-sm">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function storeOriginal(input) {
             input.dataset.original = input.value;
         }
 
@@ -1054,15 +1218,15 @@
             // ✔ ถูกต้อง → อัปเดต original
             input.dataset.original = input.value;
         }
-    </script>
+</script>
 
 
 
 
-    <!-- Auto Set Permission ตาม Role -->
+<!-- Auto Set Permission ตาม Role -->
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
 
             const readOnlyProjectFields = [
                 'Estimated_Gross_Profit_PJ',
@@ -1184,55 +1348,55 @@
                 });
             });
         });
-    </script>
+</script>
 
 
-    <!--แปลงเป็น Editable-->
+<!--แปลงเป็น Editable-->
 
-    <style>
-        /* Input field แบบ Excel */
-        .excel-input {
-            width: 100%;
-            min-width: 100px;
-            /* ให้ cell แสดงเต็มความยาวที่ต้องการ */
+<style>
+    /* Input field แบบ Excel */
+    .excel-input {
+        width: 100%;
+        min-width: 100px;
+        /* ให้ cell แสดงเต็มความยาวที่ต้องการ */
 
-            background: transparent;
-            /* พื้นหลังใส */
-            font-size: 10px;
-            text-align: center;
-            box-sizing: border-box;
-            /* รวม padding + border ใน width */
-            white-space: nowrap;
-            /* อยู่บรรทัดเดียว */
+        background: transparent;
+        /* พื้นหลังใส */
+        font-size: 10px;
+        text-align: center;
+        box-sizing: border-box;
+        /* รวม padding + border ใน width */
+        white-space: nowrap;
+        /* อยู่บรรทัดเดียว */
 
-            text-overflow: ellipsis;
-            /* แสดง ... ถ้ายาวเกิน */
-            transition: all 0.2s;
-            /* effect เวลา focus */
-        }
+        text-overflow: ellipsis;
+        /* แสดง ... ถ้ายาวเกิน */
+        transition: all 0.2s;
+        /* effect เวลา focus */
+    }
 
-        /* Focus / editable state */
-        .excel-input:focus,
-        .excel-input.active-hover {
-            outline: 1px solid #3b82f6;
-            /* สีฟ้า */
-            background: #eef6ff;
-            /* ฟีล Excel */
-            border-radius: 10%;
-            /* มุมโค้งเล็กน้อย */
-        }
+    /* Focus / editable state */
+    .excel-input:focus,
+    .excel-input.active-hover {
+        outline: 1px solid #3b82f6;
+        /* สีฟ้า */
+        background: #eef6ff;
+        /* ฟีล Excel */
+        border-radius: 10%;
+        /* มุมโค้งเล็กน้อย */
+    }
 
-        /* Readonly cell */
-        .readonly-cell {
-            background-color: #f5f5f5;
-            /* เทาอ่อน */
-            cursor: not-allowed;
-        }
-    </style>
+    /* Readonly cell */
+    .readonly-cell {
+        background-color: #f5f5f5;
+        /* เทาอ่อน */
+        cursor: not-allowed;
+    }
+</style>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.excel-input').forEach(input => {
                 input.addEventListener('blur', function() {
 
@@ -1272,12 +1436,12 @@
                 });
             });
         });
-    </script>
+</script>
 
 
-    <!-- Export -->
-    <script>
-        function exportToExcel() {
+<!-- Export -->
+<script>
+    function exportToExcel() {
             const table = document.getElementById("table");
             const rows = table.querySelectorAll("tr");
 
@@ -1319,12 +1483,12 @@
             // export
             XLSX.writeFile(wb, "project_visible_data.xlsx");
         }
-    </script>
+</script>
 
 
-    <!-- ฟังชั่น Filter  -->
-    <script>
-        let openFilterColumn = null;
+<!-- ฟังชั่น Filter  -->
+<script>
+    let openFilterColumn = null;
         let filters = {}; // filters[col] = array OR null
         let originalColumnValues = {}; // ค่าทั้งหมดในแต่ละคอลัมน์ (สำหรับ Checkbox list)
 
@@ -1435,19 +1599,20 @@
             const list = document.getElementById("column-filter-checkbox-list");
             list.innerHTML = "";
 
-            // 👉 ถ้ามี filter อื่น → ใช้ visibleRows
             const sourceRows =
-                Object.keys(filters).length === 0 ?
-                allRows :
-                visibleRows;
+                Object.keys(filters).length === 0
+                    ? allRows
+                    : visibleRows;
 
-            const values = [...new Set(
-                    sourceRows.map(row => getCellValue(row, colIndex))
-                )]
-                .filter(v => v !== "")
-                .sort((a, b) => a.localeCompare(b, undefined, {
-                    numeric: true
-                }));
+            const rawValues = sourceRows.map(row => getCellValue(row, colIndex));
+            const values = [...new Set(rawValues)];
+
+            // ให้ค่าว่างอยู่บนสุด
+            values.sort((a, b) => {
+                if (a === "" && b !== "") return -1;
+                if (a !== "" && b === "") return 1;
+                return a.localeCompare(b, undefined, { numeric: true });
+            });
 
             const selected = filters[colIndex] ?? [];
 
@@ -1455,13 +1620,15 @@
                 const checked = selected.includes(v) ? "checked" : "";
 
                 list.innerHTML += `
-            <label class="filter-item flex items-center space-x-2 py-1 px-2 rounded cursor-pointer hover:bg-red-100">
-                <input type="checkbox" class="filter-checkbox" value="${v}" ${checked}>
-                <span>${v}</span>
-            </label>
-        `;
+                    <label class="filter-item flex items-center space-x-2 py-1 px-2 rounded text-xs cursor-pointer hover:bg-red-100">
+                        <input type="checkbox" class="filter-checkbox" value="${v}" ${checked}>
+                        <span>${v}</span>
+                    </label>
+                `;
             });
         }
+
+
 
 
         function getCellValue(row, colIndex) {
@@ -1707,12 +1874,12 @@
             currentPage = 1;
             renderPagination();
         }
-    </script>
+</script>
 
 
-    <!-- ฟังชั่น Sort A -> Z Sort Z -> A -->
-    <script>
-        let sortState = {
+<!-- ฟังชั่น Sort A -> Z Sort Z -> A -->
+<script>
+    let sortState = {
             col: null,
             direction: null // 'asc' | 'desc'
         };
@@ -1843,7 +2010,7 @@
             // 6. ปิด modal
             closeColumnFilterModal();
         }
-    </script>
+</script>
 
 
 

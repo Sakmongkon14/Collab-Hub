@@ -156,7 +156,7 @@
 
                             <!-- Refcode -->
                             @if (Auth::check())
-                                <a href="refcode/home"
+                                <a href="{{ route('refcode.home') }}"
                                     class="px-3 py-1 rounded-md transition font-sarabun {{ Route::currentRouteName() === 'pr.home' ? 'bg-white text-blue-800' : 'text-blue hover:bg-white hover:text-blue-800' }}">
                                     Refcode
                                 </a>

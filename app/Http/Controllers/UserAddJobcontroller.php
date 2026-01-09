@@ -56,6 +56,8 @@ class UserAddJobcontroller extends Controller
             ->orderByDesc('id') // เรียงใหม่สุดก่อน (ใช้ id หรือ created_at)
             ->get();
 
+        //dd($newjob);
+
         $countApproved = DB::table('collab_newjob')
             ->where('Requester', $requester)
             ->where('Job_Adding_Status', 'Approved')
@@ -217,6 +219,7 @@ class UserAddJobcontroller extends Controller
         $project = $request->input('project_code');
         $office  = $request->input('office_code');
 
+
         $newdata = [
             'site_code'                    => $request->input('site_code'),
             'site_name'                    => $request->input('site_name'),
@@ -269,8 +272,7 @@ class UserAddJobcontroller extends Controller
             ->where('Requester', $requester)
             ->count();
 
-        $newjob = DB::table('collab_newjob')->get();
-
+        $newjob       = DB::table('collab_newjob')->get();
         $projectCodes = DB::table('collab_projectcode')->get();
         $officeCodes  = DB::table('collab_officecode')->get();
 
@@ -292,9 +294,10 @@ class UserAddJobcontroller extends Controller
             $zip = new ZipArchive;
             if ($zip->open($file->getRealPath()) === true) {
 
-                // อ่าน sharedStrings
+                /* ================= sharedStrings ================= */
                 $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
                 $sharedStrings    = [];
+
                 if ($sharedStringsXML) {
                     $xml = simplexml_load_string($sharedStringsXML);
                     foreach ($xml->si as $si) {
@@ -310,10 +313,55 @@ class UserAddJobcontroller extends Controller
                     }
                 }
 
-                // อ่าน sheet1
+                /* ================= sheet1 ================= */
                 $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
                 $rows     = simplexml_load_string($sheetXML)->sheetData->row ?? [];
 
+                /* ==================================================
+               ✅ CHECK HEADER (หัว Column)
+            =================================================== */
+                $expectedHeaders = [
+                    'Site Code',
+                    'Site Name',
+                    'Job Description',
+                    'Project Code',
+                    'Office Code',
+                    'Customer Region',
+                    'Estimated Revenue',
+                    'Estimated Service Cost',
+                    'Estimated Material Cost',
+                ];
+
+                $headerRow = $rows[0] ?? null;
+
+                if (! $headerRow) {
+                    return back()->withErrors([
+                        'xlsx_file_add' => 'ไม่พบหัวตารางในไฟล์ Excel',
+                    ], 'importErrors');
+
+                }
+
+                $actualHeaders = [];
+
+                foreach ($headerRow->c as $cell) {
+                    $val = (string) $cell->v;
+
+                    if (isset($cell['t']) && $cell['t'] == 's') {
+                        $val = $sharedStrings[(int) $val] ?? $val;
+                    }
+
+                    $actualHeaders[] = trim($val);
+                }
+
+                // ❌ ต้องตรงทั้งชื่อและจำนวน
+                if ($actualHeaders !== $expectedHeaders) {
+                    return back()->withErrors([
+                        'xlsx_file_add' => 'หัว Column ไม่ตรงตาม Template (มีเกิน / ขาด / เรียงผิด)',
+                    ], 'importErrors');
+                }
+                /* ================= END CHECK HEADER ================= */
+
+                /* ================= Import Data ================= */
                 $isFirstRow = true;
                 $cols       = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
@@ -424,9 +472,9 @@ class UserAddJobcontroller extends Controller
 
             foreach ($dataList as $data) {
 
-                $revenue  = (float) $data['Estimated_Revenue'];
-                $service  = (float) $data['Estimated_Service_Cost'];
-                $material = (float) $data['Estimated_Material_Cost'];
+                $revenue  = (float) str_replace(',', '', $data['Estimated_Revenue']);
+                $service  = (float) str_replace(',', '', $data['Estimated_Service_Cost']);
+                $material = (float) str_replace(',', '', $data['Estimated_Material_Cost']);
 
                 $grossProfit = $revenue - $service - $material;
 
@@ -442,11 +490,13 @@ class UserAddJobcontroller extends Controller
                     'Office_Code'                  => $data['Office_Code'],
                     'Customer_Region'              => $data['Customer_Region'],
 
-                    'Estimated_Revenue'            => round($revenue, 2),
-                    'Estimated_Service_Cost'       => round($service, 2),
-                    'Estimated_Material_Cost'      => round($material, 2),
-                    'Estimated_Gross_Profit'       => round($grossProfit, 2),
-                    'Estimated_Gross_ProfitMargin' => $grossMargin, // ← ไม่มี %
+                    // ใช้ number_format(ตัวเลข, ทศนิยม, จุดทศนิยม, comma)
+                    'Estimated_Revenue'            => number_format($revenue, 2, '.', ','),
+                    'Estimated_Service_Cost'       => number_format($service, 2, '.', ','),
+                    'Estimated_Material_Cost'      => number_format($material, 2, '.', ','),
+
+                    'Estimated_Gross_Profit'       => number_format($grossProfit, 2, '.', ','),
+                    'Estimated_Gross_ProfitMargin' => number_format($grossMargin, 2, '.', ',') . '%', // เพิ่ม % ถ้าต้องการ
 
                     'Requester'                    => auth()->user()->name ?? '-',
                     'Refcode'                      => $data['Refcode'],

@@ -197,6 +197,7 @@
                                     </td>
                                     <td class="py-1 px-4 border-b whitespace-nowrap text-left">
                                         {{ $item->Customer_Region }}</td>
+                                        
                                     <td class="py-1 px-4 border-b whitespace-nowrap text-right">
                                         {{ $item->Estimated_Revenue }}</td>
                                     <td class="py-1 px-4 border-b whitespace-nowrap text-right">

@@ -31,7 +31,7 @@
         </div>
     @endif
 
-     <!-- แสดงข้อความสำเร็จ -->
+    <!-- แสดงข้อความสำเร็จ -->
     @if (session('success'))
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -56,7 +56,10 @@
             }
         </style>
     @endif
-    
+
+
+
+
     <div class="flex h-[calc(100vh-64px)] overflow-hidden">
         <!-- Aside Sidebar -->
 
@@ -123,6 +126,16 @@
 
                         <!-- Buttons -->
                         <div class="flex justify-end space-x-2">
+
+                            {{-- ❌ Error ดัก Column --}}
+                            <div class="text-sm text-red-600 font-semibold">
+                                @if ($errors->importErrors->has('xlsx_file_add'))
+                                    <div class="text-sm text-red-600 font-semibold">
+                                        {{ $errors->importErrors->first('xlsx_file_add') }}
+                                    </div>
+                                @endif
+                            </div>
+
                             <button type="button" id="cancelImportBtn"
                                 class="rounded-md border py-2 px-4 font-semibold text-slate-600 hover:bg-slate-100">
                                 Cancel
@@ -595,9 +608,9 @@
                                 <tr class="hover:bg-red-100 transition-colors duration-200 text-xs ">
                                     <td class="py-1 px-4 border-b whitespace-nowrap text-left">{{ $item->Refcode }}</td>
 
-                                    
 
-                                   <td class="py-1 px-4 border-b whitespace-nowrap text-center">
+
+                                    <td class="py-1 px-4 border-b whitespace-nowrap text-center">
                                         @php
                                             $isAuthorized = Auth::check() && Auth::user()->status == 4;
                                             $statusColors = [

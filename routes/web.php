@@ -158,7 +158,7 @@ Route::get('/test/user', [Dropdowncontroller::class, 'user'])->name('user');
 // Module ERP
 
 // Search Refcode
-Route::get('refcode/home', [Refcodecontroller::class, 'index']);
+Route::get('refcode/home', [Refcodecontroller::class, 'index'])->name('refcode.home');
 Route::get('/search-refcode', [RefcodeController::class, 'searchRefcode'])->name('searchRefcode');
 
 //import refcode
